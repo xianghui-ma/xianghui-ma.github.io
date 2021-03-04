@@ -152,7 +152,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/02/%E7%AC%AC%205%20%E7%AB%A0%20%E8%BF%90%E8%BE%93%E5%B1%82/">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/04/%E7%AC%AC%205%20%E7%AB%A0%20%E8%BF%90%E8%BE%93%E5%B1%82/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/img/header.png">
@@ -166,7 +166,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/03/02/%E7%AC%AC%205%20%E7%AB%A0%20%E8%BF%90%E8%BE%93%E5%B1%82/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2021/03/04/%E7%AC%AC%205%20%E7%AB%A0%20%E8%BF%90%E8%BE%93%E5%B1%82/" class="post-title-link" itemprop="url">第 5 章 运输层</a>
         </h2>
 
         <div class="post-meta">
@@ -177,7 +177,16 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-03-02 11:53:49 / 修改时间：11:30:30" itemprop="dateCreated datePublished" datetime="2021-03-02T11:53:49+08:00">2021-03-02</time>
+              <time title="创建时间：2021-03-04 16:23:27 / 修改时间：16:22:02" itemprop="dateCreated datePublished" datetime="2021-03-04T16:23:27+08:00">2021-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
             </span>
 
           <br>
@@ -186,14 +195,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.2k</span>
+              <span>6.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -210,103 +219,137 @@
 <blockquote>
 <p>只有网络上的主机才有运输层，路由器只有<code>网络层、数据链路层、物理层</code></p>
 </blockquote>
-<h4 id="运输层的两个主要协议"><a href="#运输层的两个主要协议" class="headerlink" title="运输层的两个主要协议"></a>运输层的两个主要协议</h4><ul>
-<li>用户数据报协议UDP（User Datagram Protocol）</li>
-<li>传输控制协议TCP（Transmission Control Protocol）</li>
-</ul>
-<h4 id="端口"><a href="#端口" class="headerlink" title="端口"></a>端口</h4><p>1、端口的作用</p>
-<p>上面已经说到——分组到达网络层后，需要由运输层将数据交给对应进程。那么问题是运输层怎么知道交给哪个进程呢？</p>
-<p>解决办法就是使用端口（号）</p>
-<p>端口介于运输层与应用层之间，用于标识应用层中的各个进程。两个计算机在进行通讯时，需要知道彼此的IP地址与端口号，从而运输层便能根据网络层交上来的数据中的端口号将数据交给相应进程</p>
-<p>2、端口的分类</p>
-<ul>
-<li>服务器端使用的端口号（取值为<code>0~1023</code>）。这些端口号被指派给服务器端的应用进程，各自就固定代表相应进程。如下为一些常用的服务器端口号：</li>
-</ul>
-<p>![p1]</p>
-<ul>
-<li>客户端使用的端口号（取值为<code>49152~65535</code>）。这些端口号是留给客户主机的进程使用的。当一个进程被创建时系统为其随机分配一个端口号。当该进程被关闭后，它的端口号也被回收给其他进程使用</li>
-</ul>
-<p>运输层概述叙述完后，下面便开始正式讨论运输层的两个主要协议</p>
-<h3 id="用户数据报协议UDP"><a href="#用户数据报协议UDP" class="headerlink" title="用户数据报协议UDP"></a>用户数据报协议UDP</h3><p>1、UDP的特点</p>
-<ul>
-<li>UDP是无连接的。即发送数据之前不需要先建立连接（当然，发送数据结束后也没有连接可释放）</li>
-<li>UDP不保证可靠交付（因此主机不需要维护连接状态表）</li>
-<li>UDP是面向报文的。UDP对应用层交下来的报文，既不合并，也不拆分，而是在添加UDP首部后便将整个报文交给IP层（如果报文太长，IP层自己知道分片（第4章中我们讨论了分片））。UDP对IP层交上来的报文，在去除UDP首部后便将整个数据部分交给应用层。综上，UDP一次交付一个完整的报文</li>
-<li>UDP没有拥塞控制。因此，网络出现的拥塞不会使源主机的发送速率降低（UDP的该特性正好适合于某些实时应用，如视频会议，它允许在网络发生拥塞时丢失部分数据，但不允许有太大的时延）</li>
-<li>UDP支持一对一，一对多，多对一，多对多的通信</li>
-</ul>
-<p>2、UDP的首部格式</p>
-<p>UDP的首部由四个字段组成，每个字段两字节。各字段如下：</p>
-<ul>
-<li>源端口（号）。在需要对方回信时选用，不需要时可用全0</li>
-<li>目的端口（号）。这在终点交付报文时必须要使用到</li>
-<li>长度。UDP用户数据报的长度</li>
-<li>校验和。用于检测UDP用户数据报在传输过程中是否有错，有错就丢弃</li>
-</ul>
-<p>![p2]</p>
-<p>当运输层从IP层收到UDP数据报时，就根据首部中的目的端口，把UDP数据报通过相应的端口，上交最后的终点——应用进程。如果接收方UDP发现收到的报文中的目的端口号不正确（即不存在对应于该端口号的应用进程），就丢弃该报文，并由ICMP发送“端口不可达”差错报文给发送方</p>
-<p>UDP在收到网络层交上来的UDP报文后，会对报文进行差错检测，检测方法是：首先在UDP报文前加上“伪首部”（如上图），然后对加上伪首部的整个UDP报文计算校验和。可见，UDP的校验和不仅仅检验首部，还检验数据部分。而第四章中的IP数据报仅检验首部</p>
-<h3 id="传输控制协议TCP"><a href="#传输控制协议TCP" class="headerlink" title="传输控制协议TCP"></a>传输控制协议TCP</h3><h4 id="TCP的特点"><a href="#TCP的特点" class="headerlink" title="TCP的特点"></a>TCP的特点</h4><ul>
-<li>TCP是面向连接的。即应用程序在使用TCP协议之前，必须先建立TCP连接。在传送数据完毕后，必须释放已经建立的TCP连接</li>
-<li>每一个TCP连接只有两个端点（即TCP连接是一对一的）</li>
-<li>TCP提供可靠交付。即通过TCP连接传送的数据，无差错、不丢失、不重复、并且按序到达</li>
-<li>TCP提供全双工通信。TCP连接的两端都设有发送缓存和接收缓存，用来临时存放通信的数据。在发送时，进程将数据传给TCP缓存后，就可以做自己的事情了，TCP自己会择机把数据发送出去。在接收时，TCP将收到的数据放入缓存，上层的进程在合适的时候读取缓存中的数据</li>
-<li>TCP面向字节流（即一串字节）。“面向字节流”的意思是：发送数据时，应用进程将要传输的数据以字节流的形式传给TCP缓存（每次传多少字节依照当前网络的拥塞程度和窗口（见“TCP报文段的首部格式”）等因素决定，而不是固定的）；接收数据时，应用进程依然以字节流的形式从TCP缓存中取数据（每次取多少字节不是固定的）。如下图：</li>
-</ul>
-<p>![p3]</p>
-<h4 id="套接字（socket）"><a href="#套接字（socket）" class="headerlink" title="套接字（socket）"></a>套接字（socket）</h4><p>在上面的“TCP的特点”中我们已经知道——每一个TCP连接有两个端点。实际上，TCP连接的端点就叫“套接字”</p>
-<p>套接字由IP地址加端口号组成，即<code>套接字=IP:端口号</code>（如<code>192.3.4.5:80</code>就是一个套接字）</p>
-<p>每一个TCP连接唯一的被通信两端的两个端点（即两个套接字）所确定，即<code>TCP连接=&#123;(IP1:port1), (IP2:port2)&#125;</code>(IP1/2是两个端点主机的IP地址，port1/2是两个端点主机中的端口号)</p>
-<h4 id="TCP报文段的首部格式"><a href="#TCP报文段的首部格式" class="headerlink" title="TCP报文段的首部格式"></a>TCP报文段的首部格式</h4><p>一个TCP报文段由首部与数据部分两部分组成。首部前20个字节是固定的。如下图：</p>
-<p>![p4]</p>
-<p>下面对主要字段的含义进行解释：</p>
-<p>1、源/目的端口</p>
-<p>各占2字节，分别写入源端口号和目的端口号</p>
-<p>2、序号</p>
-<p>占4字节。TCP发送数据时，数据中的每一个字节都按顺序编号。首部中的序号字段值是指“本报文段所发送的数据的第一个字节的序号”。（例如：一报文段的序号字段值是301，而携带的数据共有100字节。这表明：本报文段的数据的第一个字节的序号是301，而最后一个字节的序号是400。下一个报文段的数据序号应当从401开始，即下一个报文段的序号字段值应为401）</p>
-<p>3、确认号</p>
-<p>占4字节。一般包含在接收方所发来的确认报文中。表示接收方希望发送方发送的下一个TCP报文段的第一个数据字节的序号。同时也告诉发送方，<code>[1, 确认号)</code>区间的数据我已收到（如B正确收到了A发送过来的一个报文段，其序号字段值是501，而数据长度是200字节（序号501-700）。因此B期望收到A的下一个数据序号是701，故B在发送给A的确认报文中将确认号置为701）</p>
-<p>确认号字段与<code>ACK</code>字段配套使用。仅当<code>ACK=1</code>时确认号字段才有效。TCP规定，在建立连接后所有传送的报文段都必须把ACK置为1</p>
-<p>4、数据偏移</p>
-<p>占4位。表示TCP报文段的数据部分的起始处距离TCP整个报文段的起始处有多远。这个字段实际上指出了TCP报文段的首部长度</p>
-<p>5、紧急URG</p>
-<p>与“紧急指针”字段配合使用。当<code>URG=1</code>时，表面紧急指针字段有效。URG告诉系统此报文段中有紧急数据，应尽快发送，而不要按原来的排队顺序发送。而此时<code>紧急指针</code>字段的值指出了紧急数据的字节数</p>
-<p>6、复位RST</p>
-<p>当<code>RST=1</code>时，表明TCP连接中出现严重差错，必须释放连接，然后再重新建立运输连接</p>
-<p>7、同步SYN</p>
-<p>当<code>SYN=1</code>而<code>ACK=0</code>时，表明这是一个连接请求报文段，用以建立TCP连接。若对方同意建立连接，则应在响应的报文段中使<code>ACK=1</code>和<code>SYN=1</code></p>
-<p>8、终止FIN</p>
-<p>用于释放连接。当<code>FIN=1</code>时，表明此报文段的发送方的数据已发送完毕，并要求释放运输连接</p>
-<p>9、窗口</p>
-<p>窗口值告诉发送方：从确认号开始，接收方目前允许对方发送的数据量（因为TCP缓存的大小是有限的）（例如：设确认号是701，窗口字段是1000。这就表明，从701号算起，发送此报文的一方还有接收1000个字节的空间）</p>
-<p>10、校验和</p>
-<p>占2字节。校验和字段检验的范围包括首部和数据两部分。和UDP用户数据报一样，在计算校验和时，要在TCP报文段的前面加上12字节的伪首部，伪首部的格式同UDP数据报的伪首部格式一样，但应将伪首部第四个字段值改为TCP协议号6，把第五字段的UDP长度改为TCP长度。接收方在收到此报文段后仍要加上这个伪首部来计算校验和</p>
-<p>至此，对TCP的基础介绍就告一段落。下面我们讨论TCP的三个非常重要的点：可靠传输、流量控制、拥塞控制</p>
-<h3 id="可靠传输、流量控制、拥塞控制"><a href="#可靠传输、流量控制、拥塞控制" class="headerlink" title="可靠传输、流量控制、拥塞控制"></a>可靠传输、流量控制、拥塞控制</h3><h4 id="可靠传输"><a href="#可靠传输" class="headerlink" title="可靠传输"></a>可靠传输</h4><p>TCP实现可靠传输的手段有：</p>
-<ul>
-<li>首部校验和（见上面“TCP报文段的首部格式”）</li>
-<li>超时传输。即TCP发送方在规定时间内没有收到接收方的确认信息，那么便重传已发送的报文段</li>
-<li>滑动窗口</li>
-</ul>
-<p>滑动窗口原理如下视频所示：</p>
-<p>在看视频前需要明晰如下两点：(1)、在未收到接收方确认的情况下，发送方可以连续的把发送窗口内的数据都发送出去。凡是已发送过的数据在未收到确认之前都必须暂时保留，以便在超时重传时使用 (2)、若接收方收到的数据未按序到达，那么接收方依然会将未按序到达的数据放入缓存</p>
-<iframe src="//player.bilibili.com/player.html?aid=374450201&bvid=BV1PZ4y1P7zp&cid=304565406&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/03/04/%E7%AC%AC%205%20%E7%AB%A0%20%E8%BF%90%E8%BE%93%E5%B1%82/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
 
-<h4 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h4><p>如果发送方发送数据的速率太快，接收方就可能来不及接收，这就会造成数据的丢失。流量控制就是让发送方的发送速率不要太快，要让接收方来得及接收</p>
-<p>TCP通过滑动窗口实现流量控制（当然，滑动窗口也保证了可靠传输）</p>
-<p>在建立TCP连接时，收发双方会协商一个窗口值，以告诉发送方能发送多少字节的数据。之后，接收方每发送一个确认报文时都会在报文的“窗口”字段告诉发送方能发送多少字节的数据</p>
-<p>举一个例子。假定在建立TCP连接时，收发双方协商的窗口值是400字节；再设发送方每次发送的数据都是100字节。流量控制如下图所示，其中<code>seq、ACK、ack、rwnd</code>分别表示<code>序号字段、ACK字段、确认号字段、窗口值字段</code>：</p>
-<p>![p5]</p>
-<p>由上图可知，接收方B发送了三次确认报文。因此接收方B共进行了三次流量控制，且三次窗口值的大小分别为300、100、0（0表示不允许发送方再发数据了）</p>
-<h4 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h4><p>我们先对拥塞控制的基本概念进行阐释：</p>
-<ul>
-<li>什么是“拥塞”？在计算机网络中的链路容量、交换节点中的缓存和处理机等，都是网络的资源。在某段时间，若对网络中某一资源的需求超过了该资源所能提供的可用部分，网络的性能就要变坏。这种情况就叫做拥塞。（你也可以简单的理解为“拥塞=传输的数据量大于网络吞吐量”）</li>
-<li>什么是“拥塞控制”？拥塞控制就是防止过多的数据注入到网络，以避免网络过载</li>
-<li>拥塞控制与流量控制。拥塞控制与流量控制是两个完全不同的概念。流量控制是端到端的，只涉及收发双方，是点对点的流量控制；而拥塞控制是针对于整个网络（因为拥塞的产生不是源于某几个计算机，而是由于整个网络中的所有点共同造成的），是对整个网络的流量控制</li>
-</ul>
-<p>下面介绍几种拥塞控制的方法：</p>
-<p>1、慢开始和拥塞避免算法</p>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/04/%E7%AC%AC%204%20%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/04/%E7%AC%AC%204%20%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82/" class="post-title-link" itemprop="url">第 4 章 网络层</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-04 16:23:27 / 修改时间：16:22:50" itemprop="dateCreated datePublished" datetime="2021-03-04T16:23:27+08:00">2021-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="第-4-章-网络层"><a href="#第-4-章-网络层" class="headerlink" title="第 4 章 网络层"></a>第 4 章 网络层</h1><h3 id="因特网的设计思路"><a href="#因特网的设计思路" class="headerlink" title="因特网的设计思路"></a>因特网的设计思路</h3><p>因特网的设计思路是：网络层仅向上层提供无连接的、尽最大努力交付的数据报服务。</p>
+<p>该种设计思路的特点如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">项目</th>
+<th align="center">特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">连接的建立</td>
+<td align="center">通信双方不需要建立连接，路由器会根据数据报中的目的地址将数据报路由到目的地</td>
+</tr>
+<tr>
+<td align="center">终点地址</td>
+<td align="center">每个数据报都有终点的完整地址，因为路由器需要根据终点地址选择路径</td>
+</tr>
+<tr>
+<td align="center">分组的转发</td>
+<td align="center">每个分组独立选择路由进行转发（见下图）</td>
+</tr>
+<tr>
+<td align="center">当结点出现故障时</td>
+<td align="center">出现故障的结点可能会丢失分组，分组也可以寻找其他路径以避开故障结点</td>
+</tr>
+<tr>
+<td align="center">分组的顺序</td>
+<td align="center">各分组到达终点的顺序不一定与与发送顺序保持一致，是随机的</td>
+</tr>
+<tr>
+<td align="center">可靠交付</td>
+<td align="center">网络层不提供可靠交付，可靠交付由端系统负责</td>
+</tr>
+</tbody></table>
+<p>下图便展示了主机H1向H2通信发送的分组各自独立的选择路由，并且在传输过程中还可能丢失</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/03/04/%E7%AC%AC%204%20%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -659,7 +702,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -710,12 +753,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">17k</span>
+    <span title="站点总字数">27k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">16 分钟</span>
+    <span title="站点阅读时长">24 分钟</span>
 </div>
 
         
