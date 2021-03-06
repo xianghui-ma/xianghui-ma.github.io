@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="JSON（JavaScript Object Notation-JavaScript对象表示法）是一种表示值和对象的数据格式（或者说JSON就是一个用于表示值&#x2F;对象的字符串）。其最初为JS所有，但后来许多其他语言也都内置有JSON。因此，借助JSON，我么可以十分方便在客户端与服务器端间交换数据。 例如，我们想将一个对象形式的数据通过网络进行传输，但是没法直接将一个对象在网络中进行传输呀！但是我们">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSON">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(17)%20JSON/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="JSON（JavaScript Object Notation-JavaScript对象表示法）是一种表示值和对象的数据格式（或者说JSON就是一个用于表示值&#x2F;对象的字符串）。其最初为JS所有，但后来许多其他语言也都内置有JSON。因此，借助JSON，我么可以十分方便在客户端与服务器端间交换数据。 例如，我们想将一个对象形式的数据通过网络进行传输，但是没法直接将一个对象在网络中进行传输呀！但是我们">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T06:23:29.669Z">
+<meta property="article:modified_time" content="2021-03-06T06:23:07.415Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(17)%20JSON/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JSON | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(17)%20JSON/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JSON
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:23:07" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>JSON（JavaScript Object Notation-JavaScript对象表示法）是一种表示值和对象的数据格式（或者说JSON就是一个用于表示值/对象的字符串）。其最初为JS所有，但后来许多其他语言也都内置有JSON。因此，借助JSON，我么可以十分方便在客户端与服务器端间交换数据。</p>
+<p>例如，我们想将一个对象形式的数据通过网络进行传输，但是没法直接将一个对象在网络中进行传输呀！但是我们可将对象转换为JSON字符串，这样便能进行传输了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var obj &#x3D; &#123;name:&quot;德洛丽丝&quot;, age:32&#125;</span><br><span class="line">			||</span><br><span class="line">		转换为JSON</span><br><span class="line">			||</span><br><span class="line">			\&#x2F;</span><br><span class="line">&quot;&#123;&quot;name&quot;:&quot;德洛丽丝&quot;,&quot;age&quot;:32&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h1 id="JSON基本使用"><a href="#JSON基本使用" class="headerlink" title="JSON基本使用"></a>JSON基本使用</h1><p>JS为JSON提供了两个主要方法：</p>
+<ul>
+<li><code>JSON.stringify(value)</code>其用于将<code>value</code>转换为JSON,返回一个JSON字符串</li>
+<li><code>JSON.parse(JSON)</code>其用于将<code>JSON</code>转换为原来的形式（如原来是一个对象则<code>JSON</code>会被转换为对象；原来是一个<code>Boolean</code>值则<code>JSON</code>便被转换为<code>Boolean</code>值……）</li>
+</ul>
+<p>其中<code>value</code>可为下列数据类型：</p>
+<ul>
+<li>对象</li>
+<li>数组</li>
+<li>字符串</li>
+<li>数字</li>
+<li><code>Boolean</code>值</li>
+<li><code>null</code></li>
+</ul>
+<blockquote>
+<p><code>undefined</code>不被JSON所支持</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var student &#x3D; &#123;</span><br><span class="line">	name: &#39;John&#39;,</span><br><span class="line">	age: 30,</span><br><span class="line">	isAdmin: false,</span><br><span class="line">	courses: [&#39;html&#39;, &#39;css&#39;, &#39;js&#39;],</span><br><span class="line">	wife: null</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var json &#x3D; JSON.stringify(student);</span><br><span class="line">&#x2F;&#x2F;&quot;&#123;&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:30,&quot;isAdmin&quot;:false,&quot;courses&quot;:[&quot;html&quot;,&quot;css&quot;,&quot;js&quot;],&quot;wife&quot;:null&#125;&quot;</span><br><span class="line"></span><br><span class="line">var initial &#x3D; JSON.parse(json);</span><br><span class="line">console.log(initial.courses[1]);&#x2F;&#x2F;&quot;css&quot;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>通过<code>stringify</code>获得的结果也被称为JSON序列化对象</p>
+</blockquote>
+<p>但是，在对象（包括嵌套的内层对象）序列化过程中，<code>stringify</code>有如下特殊特性：</p>
+<ul>
+<li>属性值为一个函数的属性不会被<code>stringify</code>序列化</li>
+<li>属性值为<code>undefined</code>的属性不会被<code>stringify</code>序列化；数组中的某个值为<code>undefined</code>时该值会被<code>stringify</code>序列化为<code>null</code></li>
+<li>对象中的属性值为循环引用时，序列化会报错<code>Uncaught TypeError: Converting circular structure to JSON</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var obj &#x3D; &#123;</span><br><span class="line">	fn:function()&#123;&#125;,</span><br><span class="line">	val:undefined,</span><br><span class="line">	arr:[1,undefined,&quot;small&quot;]</span><br><span class="line">&#125;;</span><br><span class="line">var json &#x3D; JSON.stringify(obj);&#x2F;&#x2F;&quot;&#123;&quot;arr&quot;:[1,null,&quot;small&quot;]&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中<code>fn&amp;val</code>未被序列化，因此它们未出现在序列化结果中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var A &#x3D; &#123;&#125;</span><br><span class="line">var B &#x3D; &#123;&#125;</span><br><span class="line">A.obj &#x3D; B;</span><br><span class="line">B.obj &#x3D; A;</span><br><span class="line">var json &#x3D; JSON.stringify(A);&#x2F;&#x2F;test.html:47 Uncaught TypeError: Converting circular structure to JSON</span><br></pre></td></tr></table></figure>
+
+<p>上述<code>A</code>中的属性引用了<code>B</code>，而<code>B</code>中的属性引用了<code>A</code>，这便是循环引用</p>
+<h1 id="JSON方法的更多特性"><a href="#JSON方法的更多特性" class="headerlink" title="JSON方法的更多特性"></a>JSON方法的更多特性</h1><p>上述只是<code>stringify</code>与<code>parse</code>的基本常用用法，下面我们对其进行更为完整的探究：</p>
+<p><code>stringify</code>的完整语法是：<code>JSON.stringify(value, replacer, space])</code></p>
+<p><code>replacer</code>参数用于告诉<code>stringify</code>你想序列化哪些属性。其值为数组或函数：</p>
+<ul>
+<li><code>replacer</code>为数组时</li>
+</ul>
+<p>此时，<code>replacer</code>只会序列化数组中指定的属性，且该规则还会作用于内层嵌套对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var room &#x3D; &#123;</span><br><span class="line">  number: 23</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var meetup &#x3D; &#123;</span><br><span class="line">  title: &quot;Conference&quot;,</span><br><span class="line">  participants: [&#123;name: &quot;John&quot;&#125;, &#123;name: &quot;Alice&quot;&#125;],</span><br><span class="line">  place: room &#x2F;&#x2F; meetup references room</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">room.occupiedBy &#x3D; meetup; &#x2F;&#x2F; room references meetup</span><br><span class="line"></span><br><span class="line">console.log( JSON.stringify(meetup, [&#39;title&#39;, &#39;participants&#39;]) );</span><br><span class="line">&#x2F;&#x2F; &quot;&#123;&quot;title&quot;:&quot;Conference&quot;,&quot;participants&quot;:[&#123;&#125;,&#123;&#125;]&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><code>stringify</code>只序列化了数组中指定的<code>title</code>与<code>participants</code>属性。同时，由于数组中没有包含<code>name</code>属性，因此内层嵌套对象中的<code>name</code>属性不会被序列化</p>
+<ul>
+<li><code>replacer</code>为<code>function(key, value)</code>函数时</li>
+</ul>
+<p><code>stringify</code>会为对象（包括内层嵌套对象）中的每一个键值对调用该函数，且该函数必须有返回值以用于告诉<code>stringify</code>当前遍历出的这个属性是否需要被序列化。若返回<code>undefined</code>则表明当前属性不需要被序列化；若返回<code>value</code>则表明当前属性需要被序列化。需要注意的是：只能返回<code>undefined</code>或<code>value</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var room &#x3D; &#123;</span><br><span class="line">    number: 23</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var meetup &#x3D; &#123;</span><br><span class="line">    title: &quot;Conference&quot;,</span><br><span class="line">    participants: [&#123;name: &quot;John&quot;&#125;, &#123;name: &quot;Alice&quot;&#125;],</span><br><span class="line">    place: room &#x2F;&#x2F; meetup references room</span><br><span class="line">&#125;;</span><br><span class="line">room.occupiedBy &#x3D; meetup; &#x2F;&#x2F; room references meetup</span><br><span class="line">console.log(JSON.stringify(meetup, function(key, value)&#123;</span><br><span class="line">	return key &#x3D;&#x3D;&#x3D; &quot;occupiedBy&quot; ? undefined : value;&#x2F;&#x2F;&quot;&#123;&quot;title&quot;:&quot;Conference&quot;,&quot;participants&quot;:[&#123;&quot;name&quot;:&quot;John&quot;&#125;,&#123;&quot;name&quot;:&quot;Alice&quot;&#125;],&quot;place&quot;:&#123;&quot;number&quot;:23&#125;&#125;&quot;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<p><code>space</code>参数指定格式化时缩进空格数量，用于告诉<code>stringify</code>对序列化后的结果进行格式化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">var room &#x3D; &#123;</span><br><span class="line">    number: 23</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var meetup &#x3D; &#123;</span><br><span class="line">    title: &quot;Conference&quot;,</span><br><span class="line">    participants: [&#123;name: &quot;John&quot;&#125;, &#123;name: &quot;Alice&quot;&#125;],</span><br><span class="line">    place: room &#x2F;&#x2F; meetup references room</span><br><span class="line">&#125;;</span><br><span class="line">room.occupiedBy &#x3D; meetup; &#x2F;&#x2F; room references meetup</span><br><span class="line">console.log(JSON.stringify(meetup, function(key, value)&#123;</span><br><span class="line">    return key &#x3D;&#x3D;&#x3D; &quot;occupiedBy&quot; ? undefined : value;</span><br><span class="line">&#125;, 4));</span><br><span class="line">&#x2F;*</span><br><span class="line">&#123;</span><br><span class="line">    &quot;title&quot;: &quot;Conference&quot;,</span><br><span class="line">    &quot;participants&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;: &quot;John&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;: &quot;Alice&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;place&quot;: &#123;</span><br><span class="line">        &quot;number&quot;: 23</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>相较于前面一行显示的序列化结果而言，此代码对序列化后的结果进行了格式化</p>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://javascript.info/json">JSON methods, toJSON</a></strong></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/04/%E7%AC%AC%205%20%E7%AB%A0%20%E8%BF%90%E8%BE%93%E5%B1%82/" rel="prev" title="第 5 章 运输层">
+      <i class="fa fa-chevron-left"></i> 第 5 章 运输层
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(01)%20JavaScript%E6%A6%82%E8%BF%B0/" rel="next" title="JavaScript概述">
+      JavaScript概述 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">JSON基本使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON%E6%96%B9%E6%B3%95%E7%9A%84%E6%9B%B4%E5%A4%9A%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">JSON方法的更多特性</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">73k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:06</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

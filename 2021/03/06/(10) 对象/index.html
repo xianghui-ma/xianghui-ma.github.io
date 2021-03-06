@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本节主要从对象的创建，使用构造函数创建对象的原理，对对象的操作等方面来讨论 创建对象JS中有四种创建对象的方法：  通过对象字面量  1234var car &#x3D; &amp;#123;	name : &quot;BMW&quot;,	color : &quot;black&quot;&amp;#125;;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对象">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(10)%20%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="本节主要从对象的创建，使用构造函数创建对象的原理，对对象的操作等方面来讨论 创建对象JS中有四种创建对象的方法：  通过对象字面量  1234var car &#x3D; &amp;#123;	name : &quot;BMW&quot;,	color : &quot;black&quot;&amp;#125;;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T06:23:29.685Z">
+<meta property="article:modified_time" content="2021-03-06T06:19:56.777Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(10)%20%E5%AF%B9%E8%B1%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>对象 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(10)%20%E5%AF%B9%E8%B1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          对象
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:19:56" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本节主要从对象的创建，使用构造函数创建对象的原理，对对象的操作等方面来讨论</p>
+<h1 id="创建对象"><a href="#创建对象" class="headerlink" title="创建对象"></a>创建对象</h1><p>JS中有四种创建对象的方法：</p>
+<ul>
+<li>通过对象字面量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var car &#x3D; &#123;</span><br><span class="line">	name : &quot;BMW&quot;,</span><br><span class="line">	color : &quot;black&quot;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<ul>
+<li>通过系统自带的构造函数<code>Object()</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var car &#x3D; new Object();</span><br><span class="line">car.name &#x3D; &quot;BMW&quot;;</span><br><span class="line">car.color &#x3D; &quot;black&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过自定义的构造函数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function Car()&#123;</span><br><span class="line">    this.name &#x3D; &quot;BMW&quot;;</span><br><span class="line">    this.color &#x3D; &quot;block&quot;;</span><br><span class="line">&#125;</span><br><span class="line">var carObj &#x3D; new Car();</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>为规范，构造函数应采用大驼峰命名规则</p>
+</blockquote>
+<ul>
+<li>通过<code>Object.create(原型)</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var obj1 &#x3D; &#123;</span><br><span class="line">    name : &quot;德洛丽丝&quot;</span><br><span class="line">&#125;</span><br><span class="line">var obj2 &#x3D; Object.create(obj1);</span><br><span class="line">console.log(obj2.name);&#x2F;&#x2F;德洛丽丝</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>你可结合<code>原型</code>一节来理解<code>Object.create(原型)</code>这种创建方式</p>
+</blockquote>
+<h1 id="构造函数创建对象的原理"><a href="#构造函数创建对象的原理" class="headerlink" title="构造函数创建对象的原理"></a>构造函数创建对象的原理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function Car()&#123;</span><br><span class="line">    this.name &#x3D; &quot;BMW&quot;;</span><br><span class="line">    this.color &#x3D; &quot;block&quot;;</span><br><span class="line">&#125;</span><br><span class="line">var carObj &#x3D; new Car();</span><br></pre></td></tr></table></figure>
+
+<p>上述代码等价于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function Car()&#123;</span><br><span class="line">	&#x2F;*var this &#x3D; &#123;__proto__ : Car.prototype&#125;*&#x2F;</span><br><span class="line">    this.name &#x3D; &quot;BMW&quot;;</span><br><span class="line">    this.color &#x3D; &quot;block&quot;;</span><br><span class="line">	&#x2F;*return this*&#x2F;</span><br><span class="line">&#125;</span><br><span class="line">var carObj &#x3D; new Car();</span><br></pre></td></tr></table></figure>
+
+<p>如上述代码展示的那样：当你通过<code>new</code>调用<code>Car</code>函数时，引擎便会将<code>Car</code>视为构造函数；对于构造函数而言，引擎会在函数第一行隐式地创建一个名为<code>this</code>的对象，并同时在该对象中初始化一个<code>__proto__</code>属性并将其指向<code>Car</code>的<code>prototype</code>（请参照<code>原型</code>一节）；而后续的<code>this.XXX</code>便就是向<code>this</code>中添加属性/方法；在函数最后会隐式地返回<code>this</code></p>
+<blockquote>
+<p>只有通过<code>new</code>调用某个函数时，该函数才会被视为构造函数，而只有构造函数才会经历上述步骤。普通函数不会。且除了会经历上述步骤外，构造函数与普通函数并没有任何区别</p>
+</blockquote>
+<p>如果我们在构造函数最后进行手动返回会怎样呢？如果你手动返回一个引用类型，那么构造函数便会返回该引用值而不是<code>this</code>；如果你手动返回的是一个原始类型的值，那么构造函数会忽略该值而返<code>this</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function Person()&#123;</span><br><span class="line">    this.name &#x3D; &quot;伯纳德&quot;;</span><br><span class="line">    return [1, 2, 3];</span><br><span class="line">&#125;</span><br><span class="line">var person &#x3D; new Person();</span><br><span class="line">console.log(person);&#x2F;&#x2F;[1, 2, 3]</span><br><span class="line"></span><br><span class="line">&#x2F;**********&#x2F;</span><br><span class="line"></span><br><span class="line">function Person()&#123;</span><br><span class="line">    this.name &#x3D; &quot;伯纳德&quot;;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line">var person &#x3D; new Person();</span><br><span class="line">console.log(person);&#x2F;&#x2F;Person &#123;name: &quot;伯纳德&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="对象属性的增删改查"><a href="#对象属性的增删改查" class="headerlink" title="对象属性的增删改查"></a>对象属性的增删改查</h1><p>我们仅在此讨论删操作和通过<code>[]</code>操作属性。</p>
+<p>我们可以通过<code>delete 对象.属性/方法</code>来删除对象中的某个属性/方法。但<code>delete</code>运算符只能删除自有属性，不能删除继承属性,要删除继承属性必须从定义这个属性的原型对象上删除它（你可结合<code>原型</code>一节来理解这句话）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var obj &#x3D; &#123;</span><br><span class="line">    name : &quot;梅芙&quot;</span><br><span class="line">&#125;</span><br><span class="line">console.log(obj.name);&#x2F;&#x2F;梅芙</span><br><span class="line">console.log(delete obj.name);&#x2F;&#x2F;true</span><br><span class="line">console.log(obj.name);&#x2F;&#x2F;undefined</span><br><span class="line"></span><br><span class="line">console.log(delete obj.age);&#x2F;&#x2F;true</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，当<code>delete</code>对象中没有的属性时一样会返回<code>true</code></p>
+<p>现在我们讨论<code>[]</code>。我们更熟悉的或许是使用<code>对象.属性/方法</code>的方式来操作对象的属性/方法；实际上通过<code>对象[属性/方法]</code>也可以操作对象的属性/方法，其与<code>.</code>的效果是一样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var proName &#x3D; &quot;mot&quot;;</span><br><span class="line">var obj &#x3D; &#123;&#125;;</span><br><span class="line">obj[proName + &quot;to&quot;] &#x3D; &quot;残暴的欢愉终将以残暴结束&quot;;</span><br><span class="line">console.log(obj[proName + &quot;to&quot;]);&#x2F;&#x2F;残暴的欢愉终将以残暴结束</span><br><span class="line">console.log(delete obj[proName + &quot;to&quot;]);&#x2F;&#x2F;true</span><br><span class="line">console.log(obj[proName + &quot;to&quot;]);&#x2F;&#x2F;undefined</span><br></pre></td></tr></table></figure>
+
+<p>如你所见，<code>[]</code>中的内容是一个字符串，或者是一个能返回字符串或能返回一个可以转换为字符串的值的表达式，变量等</p>
+<blockquote>
+<p>当查找对象中的某个属性时，如果对象中不存在该属性则返回<code>undefined</code>（可参照<code>原型</code>一节中的<code>查操作</code>理解为什么）</p>
+</blockquote>
+<h1 id="属性特性"><a href="#属性特性" class="headerlink" title="属性特性"></a>属性特性</h1><p>在JS中，对象的每个属性都有各自的属性特性（也成为<code>属性描述符</code>），这些属性特性包括：</p>
+<ul>
+<li><code>value</code>，即属性的值</li>
+<li><code>writable</code>，即可写性。表示是否可以更改该属性的值</li>
+<li><code>enumerable</code>，即可枚举性。表示<code>for/in</code>循环（将在下面讨论）能否遍历到该属性</li>
+<li><code>configurable</code>，即可配置性。表示是否可以<code>delete</code>该属性</li>
+</ul>
+<blockquote>
+<p>我们在代码中给对象添加的属性/方法都是可枚举的；但内置属性/方法通常是不可枚举的</p>
+</blockquote>
+<p>除<code>value</code>外，上述属性特性的值均为<code>boolean</code>值，<code>true</code>表示<code>是</code>，<code>false</code>表示<code>否</code>。</p>
+<p>我们可通过<code>Object.getOwnPropertyDescriptor(对象, 属性)</code>来查看对象中某个属性的属性特性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var person &#x3D; &#123;</span><br><span class="line">    name : &quot;普莱斯&quot;</span><br><span class="line">&#125;</span><br><span class="line">console.log(Object.getOwnPropertyDescriptor(person, &quot;name&quot;));</span><br><span class="line">&#x2F;*</span><br><span class="line">&#123;</span><br><span class="line">	value: &quot;普莱斯&quot;</span><br><span class="line">	writable: true</span><br><span class="line">	enumerable: true</span><br><span class="line">	configurable: true</span><br><span class="line">&#125;</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h1 id="属性枚举"><a href="#属性枚举" class="headerlink" title="属性枚举"></a>属性枚举</h1><p>属性枚举即遍历对象的属性。<code>for/in</code>循环可以枚举对象中所有的可枚举属性（包括自有属性和继承得到的属性）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.sayHello &#x3D; function()&#123;</span><br><span class="line">    console.log(&quot;Hello!&quot;);</span><br><span class="line">&#125;</span><br><span class="line">function Person()&#123;</span><br><span class="line">    this.name &#x3D; &quot;伯纳德&quot;;</span><br><span class="line">&#125;</span><br><span class="line">var persObj &#x3D; new Person();</span><br><span class="line">for(key in persObj)&#123;</span><br><span class="line">    console.log(key + &quot;:&quot; + persObj[key]);</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;*</span><br><span class="line">name:伯纳德</span><br><span class="line">sayHello:function()&#123;</span><br><span class="line">            console.log(&quot;Hello!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码在遍历<code>persObj</code>时，每次遍历都会将属性名(遍历出的属性名是<code>string</code>类型)给<code>key</code>以遍历对象各属性</p>
+<p>如果你不想遍历原型上的可枚举属性，那么可通过<code>hasOwnPreperty()</code>（见<code>原型</code>一节）进行过滤：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.sayHello &#x3D; function()&#123;</span><br><span class="line">    console.log(&quot;Hello!&quot;);</span><br><span class="line">&#125;</span><br><span class="line">function Person()&#123;</span><br><span class="line">    this.name &#x3D; &quot;伯纳德&quot;;</span><br><span class="line">&#125;</span><br><span class="line">var persObj &#x3D; new Person();</span><br><span class="line">for(key in persObj)&#123;</span><br><span class="line">    if(persObj.hasOwnProperty(key))&#123;</span><br><span class="line">        console.log(key + &quot;:&quot; + persObj[key]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;*name:伯纳德*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h1 id="属性检测"><a href="#属性检测" class="headerlink" title="属性检测"></a>属性检测</h1><p>属性检测即判断某个属性是否在某个对象中。方法如下：</p>
+<ul>
+<li><p><code>in</code>运算符</p>
+<p>其语法为<code>属性名(string类型) in 对象</code>，返回<code>boolean</code>值，如果对象的自有属性或继承属性中包含这个属性则返回<code>true</code>。依旧以属性枚举中的代码为例：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(&quot;sayHello&quot; in persObj);&#x2F;&#x2F;true</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>hasOwnPreperty()</code>。见<code>原型</code>一节</li>
+</ul>
+<h1 id="实例检测"><a href="#实例检测" class="headerlink" title="实例检测"></a>实例检测</h1><p><code>A instanceof B</code>用于判断A的原型链上是否有B的原型，有返回<code>true</code>，无返回<code>false</code>。其中A应是一个对象，如不是对象则<code>instanceof</code>恒返回<code>false</code>；B应是一个函数，若不是函数则抛出<code>TypeError</code>异常</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function Person()&#123;</span><br><span class="line">&#125;</span><br><span class="line">var persObj &#x3D; new Person();</span><br><span class="line">console.log(persObj instanceof Person);&#x2F;&#x2F;true</span><br><span class="line">console.log(persObj instanceof Object);&#x2F;&#x2F;true</span><br><span class="line">console.log(persObj instanceof Array);&#x2F;&#x2F;false</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考：</strong></p>
+<ul>
+<li><strong>《JavaScript权威指南 第六版》</strong></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(09)%20%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0/" rel="prev" title="立即执行函数">
+      <i class="fa fa-chevron-left"></i> 立即执行函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(11)%20this%20&%20call%20&%20apply%20&%20bind/" rel="next" title="this & call & apply & bind">
+      this & call & apply & bind <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">创建对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">构造函数创建对象的原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7%E7%9A%84%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-number">3.</span> <span class="nav-text">对象属性的增删改查</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E7%89%B9%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">属性特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E6%9E%9A%E4%B8%BE"><span class="nav-number">5.</span> <span class="nav-text">属性枚举</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E6%A3%80%E6%B5%8B"><span class="nav-number">6.</span> <span class="nav-text">属性检测</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E6%A3%80%E6%B5%8B"><span class="nav-number">7.</span> <span class="nav-text">实例检测</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">73k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:06</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

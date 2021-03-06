@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本节将讨论什么是包装对象？怎么创建包装对象？及包装对象的一些特性 什么是包装对象在JavaScript基本语法一节中我们已经知道JS中有string&#x2F;boolean&#x2F;number&#x2F;null&#x2F;undefined五种基本值类型。其中string&#x2F;boolean&#x2F;number都分别有对应的函数String&#x2F;Boolean&#x2F;Number。而所谓的包装对象就是指：通过上述三个函数将某个原始值转换为对应的对象">
+<meta property="og:type" content="article">
+<meta property="og:title" content="包装对象">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(12)%20%E5%8C%85%E8%A3%85%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="本节将讨论什么是包装对象？怎么创建包装对象？及包装对象的一些特性 什么是包装对象在JavaScript基本语法一节中我们已经知道JS中有string&#x2F;boolean&#x2F;number&#x2F;null&#x2F;undefined五种基本值类型。其中string&#x2F;boolean&#x2F;number都分别有对应的函数String&#x2F;Boolean&#x2F;Number。而所谓的包装对象就是指：通过上述三个函数将某个原始值转换为对应的对象">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T06:23:29.689Z">
+<meta property="article:modified_time" content="2021-03-06T06:20:59.648Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(12)%20%E5%8C%85%E8%A3%85%E5%AF%B9%E8%B1%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>包装对象 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(12)%20%E5%8C%85%E8%A3%85%E5%AF%B9%E8%B1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          包装对象
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:20:59" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本节将讨论什么是包装对象？怎么创建包装对象？及包装对象的一些特性</p>
+<h1 id="什么是包装对象"><a href="#什么是包装对象" class="headerlink" title="什么是包装对象"></a>什么是包装对象</h1><p>在<code>JavaScript基本语法</code>一节中我们已经知道JS中有<code>string/boolean/number/null/undefined</code>五种基本值类型。其中<code>string/boolean/number</code>都分别有对应的函数<code>String/Boolean/Number</code>。而所谓的包装对象就是指：通过上述三个函数将某个原始值转换为对应的对象，这个对象就叫包装对象。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var bol &#x3D; true;&#x2F;&#x2F;原始值</span><br><span class="line">var bolObj &#x3D; new Boolean(bol);&#x2F;&#x2F;包装对象</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：<code>null</code>与<code>undefined</code>没有对应的函数，故它们没有包装对象</p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="创建包装对象"><a href="#创建包装对象" class="headerlink" title="创建包装对象"></a>创建包装对象</h1><p>有两种方式可以创建包装对象。一种是显示地通过<code>new</code>调用<code>String/Boolean/Number</code>函数（如上所示）；另一种方式是通过系统隐式地创建，如下讨论。</p>
+<p>你可能遇到过下述情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var str &#x3D; &quot;abc&quot;;</span><br><span class="line">console.log(str.length);&#x2F;&#x2F;3</span><br></pre></td></tr></table></figure>
+
+<p><code>str</code>是一个原始值为什么还有属性呢？因为在执行<code>str.length</code>时，引擎会隐式地通过<code>new String(&quot;abc&quot;)</code>创建一个包装对象，然后访问这个包装对象中的<code>length</code>属性，访问完毕后所创建的包装对象会被立即销毁。</p>
+<p>因此，在我们试图访问原始值（除<code>null</code>与<code>undefined</code>）的属性/方法时，会经历如下步骤：</p>
+<ol>
+<li>通过<code>new String/Number/Boolean(...)</code>隐式地创建一个包装对象</li>
+<li>执行相应操作</li>
+<li>相应操作执行完毕后马上销毁包装对象</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var num &#x3D; 100;</span><br><span class="line">num.supplyment &#x3D; 200;</span><br><span class="line">console.log(num.supplyment);&#x2F;&#x2F;undefined</span><br></pre></td></tr></table></figure>
+
+<p>在执行<code>num.supplyment = 200</code>操作时会创建一个包装对象，并在此包装对象中添加<code>supplyment</code>属性，并为其赋值<code>200</code>；添加属性操作完成后便马上销毁所创建的包装对象；在执行<code>num.supplyment</code>时又会创建一个新的包装对象（与前面那一个没关系），因此这个新的包装对象中没有<code>supplyment</code>属性，故返回<code>undefined</code></p>
+<p>因此，系统隐式地创建的包装对象与显示地创建的包装对象的生命期是不同的</p>
+<p><strong>参考：</strong></p>
+<ul>
+<li><strong>《JavaScript权威指南 第六版》</strong></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(11)%20this%20&%20call%20&%20apply%20&%20bind/" rel="prev" title="this & call & apply & bind">
+      <i class="fa fa-chevron-left"></i> this & call & apply & bind
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(13)%20%E5%8E%9F%E5%9E%8B/" rel="next" title="原型">
+      原型 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8C%85%E8%A3%85%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">什么是包装对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%8C%85%E8%A3%85%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">创建包装对象</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">73k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:06</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

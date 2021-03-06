@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="执行期上下文，作用域和作用域链是JS中的重要内容，本文将对他们进行具体阐述以说明它们是什么，它们间的联系以及作用域链所扮演的重要角色 执行期上下文执行期上下文就是当前正在被执行的代码所处的运行环境，其分为  全局执行期上下文（global execution context） 函数执行期上下文（function execution context）  当执行全局（即函数体之外）中的代码时则位于全局">
+<meta property="og:type" content="article">
+<meta property="og:title" content="作用域">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(07)%20%E4%BD%9C%E7%94%A8%E5%9F%9F/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="执行期上下文，作用域和作用域链是JS中的重要内容，本文将对他们进行具体阐述以说明它们是什么，它们间的联系以及作用域链所扮演的重要角色 执行期上下文执行期上下文就是当前正在被执行的代码所处的运行环境，其分为  全局执行期上下文（global execution context） 函数执行期上下文（function execution context）  当执行全局（即函数体之外）中的代码时则位于全局">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="data:image/png;base64,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">
+<meta property="og:image" content="data:image/png;base64,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">
+<meta property="article:published_time" content="2021-03-06T06:23:29.681Z">
+<meta property="article:modified_time" content="2021-03-06T06:18:49.554Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="data:image/png;base64,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">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(07)%20%E4%BD%9C%E7%94%A8%E5%9F%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>作用域 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(07)%20%E4%BD%9C%E7%94%A8%E5%9F%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          作用域
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:18:49" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><code>执行期上下文，作用域和作用域链</code>是JS中的重要内容，本文将对他们进行具体阐述以说明它们是什么，它们间的联系以及作用域链所扮演的重要角色</p>
+<h1 id="执行期上下文"><a href="#执行期上下文" class="headerlink" title="执行期上下文"></a>执行期上下文</h1><p>执行期上下文就是当前正在被执行的代码所处的运行环境，其分为</p>
+<ul>
+<li>全局执行期上下文（global execution context）</li>
+<li>函数执行期上下文（function execution context）</li>
+</ul>
+<p>当执行全局（即函数体之外）中的代码时则位于全局执行期上下文中；当执行函数中的代码时则位于函数执行期上下文中。如下图所示：</p>
+<p><img src="data:image/png;base64,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" alt="image"></p>
+<p>为了便于理解，你可以将执行期上下文看作一个带有三个属性的对象：</p>
+<span id="more"></span>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">executionContextObj &#x3D; &#123;</span><br><span class="line">    &#39;scopeChain&#39;: &#123; &#x2F;* current AO + all parent execution context&#39;s AO + GO *&#x2F; &#125;,</span><br><span class="line">    &#39;AO&#x2F;GO&#39;: &#123; &#x2F;*......*&#x2F; &#125;,</span><br><span class="line">    &#39;this&#39;: &#123; &#x2F;*......*&#x2F; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>scopeChain</code>即为作用域链；<code>AO</code>已在<code>预编译</code>一节中进行了阐述；<code>this</code>将在后面讲到</p>
+<p>对执行期上下文有了形象的认识后，我们接着讨论函数执行期上下文的形成过程：</p>
+<ol>
+<li>遇见了一个函数调用语句</li>
+<li>对函数进行预编译，预编译步骤如下：</li>
+<li>1 首先创建该函数的<code>executionContextObj</code>空对象</li>
+<li>2 初始化<code>scopeChain</code></li>
+<li>3 创建<code>AO</code>对象（见<code>预编译</code>一节）</li>
+<li>4 确定<code>this</code>指向</li>
+<li>函数预编译结束，开始执行函数中的代码</li>
+</ol>
+<p>由上述我们便可推知全局执行期上下文的形成过程：</p>
+<ol>
+<li>首先进行全局预编译，预编译步骤如下：</li>
+<li>1 首先创建全局的<code>executionContextObj</code>空对象</li>
+<li>2 初始化<code>scopeChain</code></li>
+<li>3 创建<code>GO</code>对象（见<code>预编译</code>一节）</li>
+<li>4 确定<code>this</code>指向</li>
+<li>全局预编译结束，从第一行开始执行全局中的所有代码</li>
+</ol>
+<p>由上述函数和全局执行期上下文的创建过程并结合<code>预编译</code>一节。我们可知，<code>AO/GO</code>对象的创建仅是<code>函数/全局</code>执行期上下文创建过程中的一个步骤。即预编译阶段实际上就是创建执行期上下文，而在创建执行期上下文的过程中引擎构建了<code>AO/GO</code>对象</p>
+<blockquote>
+<p>注意：函数每调用一次就会创建一个新的执行期上下文，函数执行完毕后执行期上下文也随之被销毁，且每次创建的执行期上下文都与上一次所创建的执行期上下文无关</p>
+</blockquote>
+<h1 id="作用域与作用域链"><a href="#作用域与作用域链" class="headerlink" title="作用域与作用域链"></a>作用域与作用域链</h1><p>作用域就是<code>AO/GO</code>对象，而作用域链就是<code>executionContextObj</code>中的<code>scopeChain</code>。而JS解释器使用的是词法作用域，所谓词法作用域就是——要求将内层函数的作用域绑定到他的第一个父级函数的作用域上。倘若第一个父级函数又是其他函数的内层函数，那么便以此类推继续将它的作用域绑定到他的第一个父级函数的作用域上……，这样便形成了一种链的形式——即作用域链。所以<code>scopeChain</code>满足下列等式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scopeChain &#x3D; 当前函数的AO + 第一个父级函数的AO + 第二个父级函数的AO + ... + GO</span><br></pre></td></tr></table></figure>
+
+<p>如果将作用域链想象为一个栈的话，那么<code>当前函数的AO</code>始终位于栈顶；<code>GO</code>始终位于栈底；而<code>当前函数的所有父级函数的AO</code>位于它们俩之间。如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function one() &#123;</span><br><span class="line">    var a &#x3D; 1;</span><br><span class="line">    two();</span><br><span class="line">    function two() &#123;</span><br><span class="line">        var b &#x3D; 2;</span><br><span class="line">        three();</span><br><span class="line">        function three() &#123;</span><br><span class="line">            var c &#x3D; 3;</span><br><span class="line">            alert(a + b + c); &#x2F;&#x2F; 6</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">one()​;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>three()</code>函数的<code>scopeChain = three&#39;s AO + two&#39;s AO + one&#39;s AO + GO</code>；<br><code>two()</code>函数的<code>scopeChain = two&#39;s AO + one&#39;s AO + GO</code>；<br><code>one()</code>函数的<code>scopeChain = one&#39;s AO + GO</code>；<br>全局的<code>scopeChain = GO</code>；</p>
+<p>需要特别注意的是：<code>scopeChain</code>中的<code>AO/GO</code>实际上是一个引用，该引用指向正真的<code>AO/GO</code>。即如<code>two()</code>函数中的<code>one&#39;s AO</code>与<code>three()</code>函数中的<code>one&#39;s AO</code>都只是<code>one()</code>函数的<code>AO</code>的引用，所以实际上这两个函数的<code>one&#39;s AO</code>是同一个</p>
+<h1 id="LHS与RHS查询"><a href="#LHS与RHS查询" class="headerlink" title="LHS与RHS查询"></a>LHS与RHS查询</h1><p>至此，我们已经明晰了作用域链。那么作用域链有什么用呢？这就是我们接下来需要讨论的问题。实际上，作用域链的作用就是用来进行标识符查询以对标识符进行相应操作（如变量赋值，函数调用等）</p>
+<p>而标识符查询又分为：</p>
+<ul>
+<li><code>LHS</code>查询。<code>LHS</code>查询就是找到标识符容器本身以将值放入容器</li>
+<li><code>RHS</code>查询。<code>RHS</code>查询就是查找某个标识符的值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function foo(a) &#123;</span><br><span class="line">var b &#x3D; a;</span><br><span class="line">return a + b;</span><br><span class="line">&#125;</span><br><span class="line">var c &#x3D; foo( 2 );</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中的<code>LHS</code>查询有：</p>
+<ol>
+<li>查询变量<code>c</code>以将函数调用的返回值赋予<code>c</code></li>
+<li>查询形参<code>a</code>以将实参<code>2</code>赋予形参</li>
+<li>查询变量<code>b</code>以将<code>a</code>的值赋予<code>b</code></li>
+</ol>
+<p>而<code>RHS</code>查询有：</p>
+<ol>
+<li>查询<code>foo</code>以得到<code>foo</code>中存储的函数引用，从而调用<code>foo</code>函数</li>
+<li>查询<code>var b = a</code>中的变量<code>a</code>以得到它的值，从而将值赋予<code>b</code></li>
+<li>查询<code>return a + b;</code>中的变量<code>a</code>与<code>b</code>，从而相加返回</li>
+</ol>
+<p>明晰了什么是<code>RHS</code>与<code>LHS</code>查询后，现在我们讨论它们是如何在作用域链上工作的。其查询规则如下：</p>
+<p>当在程序运行过程中需要查找标识符时，首先<code>LHS/RHS</code>会在<code>scopeChain</code>中的第一个<code>AO</code>（即当前函数的<code>AO</code>）中查询标识符，如果找不到就继续查找<code>scopeChain</code>中的下一个<code>AO</code>直到抵达<code>GO</code>，如果在<code>GO</code>中依旧未查询到，那么：对于<code>RHS</code>而言，引擎会抛出<code>ReferenceError</code>异常；对于<code>LHS</code>而言，引擎会在<code>GO</code>中创建一个具有相应名称的标识符</p>
+<p>图示展示查询顺序为：</p>
+<p><img src="data:image/png;base64,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" alt="image"></p>
+<p><strong>参考：</strong></p>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="http://davidshariff.com/blog/what-is-the-execution-context-in-javascript/">What is the Execution Context &amp; Stack in JavaScript?</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="http://davidshariff.com/blog/javascript-scope-chain-and-closures/">Identifier Resolution and Closures in the JavaScript Scope Chain</a></strong></li>
+<li><strong>《你不知道的JavaScript 上卷》</strong></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(06)%20%E9%A2%84%E7%BC%96%E8%AF%91/" rel="prev" title="预编译">
+      <i class="fa fa-chevron-left"></i> 预编译
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(08)%20%E9%97%AD%E5%8C%85/" rel="next" title="闭包">
+      闭包 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9C%9F%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">执行期上下文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8E%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE"><span class="nav-number">2.</span> <span class="nav-text">作用域与作用域链</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LHS%E4%B8%8ERHS%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.</span> <span class="nav-text">LHS与RHS查询</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">73k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:06</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

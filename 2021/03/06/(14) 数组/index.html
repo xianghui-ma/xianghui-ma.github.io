@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组 数组的创建JS中有两种创建数组的方法：  数组字面量  1var arr &#x3D; [1, 2, [3, 4], &quot;string&quot;];   Array构造函数  1var arr &#x3D; new Array(1, &quot;string&quot;);&#x2F;&#x2F;[a,&quot;strin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(14)%20%E6%95%B0%E7%BB%84/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组 数组的创建JS中有两种创建数组的方法：  数组字面量  1var arr &#x3D; [1, 2, [3, 4], &quot;string&quot;];   Array构造函数  1var arr &#x3D; new Array(1, &quot;string&quot;);&#x2F;&#x2F;[a,&quot;strin">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T06:23:29.692Z">
+<meta property="article:modified_time" content="2021-03-06T06:21:51.623Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(14)%20%E6%95%B0%E7%BB%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数组 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(14)%20%E6%95%B0%E7%BB%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数组
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:21:51" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组</p>
+<h1 id="数组的创建"><a href="#数组的创建" class="headerlink" title="数组的创建"></a>数组的创建</h1><p>JS中有两种创建数组的方法：</p>
+<ul>
+<li>数组字面量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, 2, [3, 4], &quot;string&quot;];</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Array</code>构造函数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; new Array(1, &quot;string&quot;);&#x2F;&#x2F;[a,&quot;string&quot;]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当<code>Array</code>中只传一个参数时，该参数表示数组的长度</p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="数组与对象"><a href="#数组与对象" class="headerlink" title="数组与对象"></a>数组与对象</h1><p>数组就是<code>&#123;&#125;</code>对象的特殊形式，只不过：数组的属性名“碰巧”是整数；数组继承了<code>Array.prototype</code>中的一些方法；数组的实现经过了优化，故访问数组数据比访问<code>&#123;&#125;</code>对象的数据要快；数组还有其他的一些自身特性（下面会说到）</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>同访问<code>&#123;&#125;</code>对象中的属性一样，在访问数组元素时，实际上会将<code>[]</code>中表达式的值转换为字符串</li>
+<li>数组索引与对象属性名的区别是：索引就是属性名，但只有非负整数的属性名才是索引，也由此可见——数组索引仅仅是对象属性名的一种特殊类型</li>
+</ol>
+</blockquote>
+<p>在明白数组就是带有某些特殊性质的<code>&#123;&#125;</code>对象后，我们便可以用看待<code>&#123;&#125;</code>对象的视角来理解数组，这样你将会很容易的理解数组的某些特性：</p>
+<h1 id="数组的特性"><a href="#数组的特性" class="headerlink" title="数组的特性"></a>数组的特性</h1><ul>
+<li>数组可以溢出读/写</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3];</span><br><span class="line"></span><br><span class="line">&#x2F;*溢出读*&#x2F;</span><br><span class="line">console.log(arr[-1]);&#x2F;&#x2F;undefined</span><br><span class="line">console.log(arr[10]);&#x2F;&#x2F;undefined</span><br><span class="line"></span><br><span class="line">&#x2F;*溢出写*&#x2F;</span><br><span class="line">arr[-1] &#x3D; &quot;伯纳德&quot;;</span><br><span class="line">arr[10] &#x3D; &quot;德洛丽丝&quot;;</span><br><span class="line"></span><br><span class="line">console.log(arr[-1]);&#x2F;&#x2F;伯纳德</span><br><span class="line">console.log(arr[10]);&#x2F;&#x2F;德洛丽丝</span><br></pre></td></tr></table></figure>
+
+<p>因为，数组是<code>&#123;&#125;</code>对象，因此数组的读/写就相当于获取<code>&#123;&#125;</code>对象中的属性或为其设置属性，因此溢出读/写时不会报错，且也能成功写入；又因为溢出读时，数组不存在该属性，而对象中没有要查找的属性时会返回<code>undefined</code>，故溢出读时值为<code>undefined</code></p>
+<p>综上所述，JS中的数组没有<code>越界</code>这一概念</p>
+<ul>
+<li>省略数组字面量中的某个值时，省略的元素将被赋予<code>undefined</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, , 2]</span><br><span class="line">console.log(arr);</span><br><span class="line">&#x2F;*</span><br><span class="line">[1, empty, 2]</span><br><span class="line">0: 1</span><br><span class="line">2: 2</span><br><span class="line">length: 3</span><br><span class="line">__proto__: Array(0)</span><br><span class="line">*&#x2F;</span><br><span class="line"></span><br><span class="line">console.log(1 in arr);&#x2F;&#x2F;false</span><br></pre></td></tr></table></figure>
+
+<h1 id="length属性"><a href="#length属性" class="headerlink" title="length属性"></a>length属性</h1><p>作为数组的核心属性，<code>length</code>属性有许多值得注意的特性：</p>
+<ul>
+<li>如果将<code>length</code>设小，那么所有下标大于或等于新<code>length</code>的属性会被删除</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3,4,5];</span><br><span class="line">arr.length &#x3D; 3</span><br><span class="line">console.log(arr);</span><br><span class="line">&#x2F;*</span><br><span class="line">[1, 2, 3]</span><br><span class="line">0: 1</span><br><span class="line">1: 2</span><br><span class="line">2: 3</span><br><span class="line">length: 3</span><br><span class="line">__proto__: Array(0)</span><br><span class="line">*&#x2F;</span><br><span class="line"></span><br><span class="line">console.log(3 in arr);&#x2F;&#x2F;false</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数组会自动维护其<code>length</code>属性：如果为一个数组元素赋值，它的索引<code>i</code>大于或等于现有数组的长度时，<code>length</code>属性的值将设置为<code>i+1</code>；删除元素后<code>length</code>也会自动减少</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2];</span><br><span class="line">arr[200] &#x3D; 222;</span><br><span class="line">console.log(arr);</span><br><span class="line">&#x2F;*</span><br><span class="line">[1, 2, empty × 198, 222]</span><br><span class="line">0: 1</span><br><span class="line">1: 2</span><br><span class="line">200: 222</span><br><span class="line">length: 201</span><br><span class="line">__proto__: Array(0)</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>通过<code>delete</code>删除数组元素并不会使<code>length</code>属性减少（下面将说到）</li>
+<li>只有使用非负整数作为属性名时数组才会自动维护其<code>length</code>属性</li>
+</ol>
+</blockquote>
+<h1 id="稀疏数组"><a href="#稀疏数组" class="headerlink" title="稀疏数组"></a>稀疏数组</h1><p>数组索引不连续，元素与元素间存在有空缺的数组即为稀疏数组。以上述<code>数组的特性</code>与<code>length属性</code>两部分中的第二个代码为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, , 2]</span><br><span class="line">console.log(arr);</span><br><span class="line">&#x2F;*</span><br><span class="line">[1, empty, 2]</span><br><span class="line">0: 1</span><br><span class="line">2: 2</span><br><span class="line">length: 3</span><br><span class="line">__proto__: Array(0)</span><br><span class="line">*&#x2F;</span><br><span class="line"></span><br><span class="line">console.log(1 in arr);&#x2F;&#x2F;false</span><br></pre></td></tr></table></figure>
+
+<p>上述<code>0</code>与<code>2</code>之间空了<code>1</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2];</span><br><span class="line">arr[200] &#x3D; 222;</span><br><span class="line">console.log(arr);</span><br><span class="line">&#x2F;*</span><br><span class="line">[1, 2, empty × 198, 222]</span><br><span class="line">0: 1</span><br><span class="line">1: 2</span><br><span class="line">200: 222</span><br><span class="line">length: 201</span><br><span class="line">__proto__: Array(0)</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>上述<code>1</code>与<code>200</code>之间空了许多元素</p>
+<p>除此之外，通过<code>delete</code>删除数组中的某个元素后数组也会变为稀疏数组。还有许多方式都能创建稀疏数组，因此你只需要明白什么是稀疏数组，而不是记住什么东西能创建稀疏数组</p>
+<blockquote>
+<p><strong>注意：</strong><br>稀疏数组中，<code>length</code>属性会包含空缺的元素</p>
+</blockquote>
+<h1 id="数组方法"><a href="#数组方法" class="headerlink" title="数组方法"></a>数组方法</h1><p>我们将要讨论的数组方法分为两大类：</p>
+<h2 id="改变原数组"><a href="#改变原数组" class="headerlink" title="改变原数组"></a>改变原数组</h2><ul>
+<li><code>reverse</code></li>
+</ul>
+<p>其倒序数组并返回更改后的原数组;无参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, 2, 3]</span><br><span class="line">arr.reverse();</span><br><span class="line">console.log(arr);&#x2F;&#x2F;[3, 2, 1]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>push</code></li>
+</ul>
+<p>其在数组最后的位置增加数据(可一次性添加多个数据)；返回更改后的长度；有参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3];</span><br><span class="line">arr.push([4, 5], 6);&#x2F;&#x2F;5</span><br><span class="line">console.log(arr);&#x2F;&#x2F;[1, 2, 3, [4, 5], 6]</span><br></pre></td></tr></table></figure>
+
+<p>也可自己模拟<code>push</code>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Array.prototype.push &#x3D; function()&#123;</span><br><span class="line">	for(var i &#x3D; 0; i &lt; arguments.length; i++)&#123;</span><br><span class="line">		this[this.length] &#x3D; arguments[i];</span><br><span class="line">		this.length++;</span><br><span class="line">	&#125;</span><br><span class="line">	return this.length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>pop</code></li>
+</ul>
+<p>从数组最后面删除一位数据，同时返回这个被删除的数据；没有参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3];</span><br><span class="line">arr.pop();&#x2F;&#x2F; 3</span><br><span class="line">console.log(arr);&#x2F;&#x2F;[1,2]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>shift</code></li>
+</ul>
+<p>在数据的最前面删除数据，和<code>pop</code>用法一样</p>
+<ul>
+<li><code>unshift</code></li>
+</ul>
+<p>在数据的最前面添加数据。和<code>push</code>用法一样</p>
+<ul>
+<li><code>splice</code></li>
+</ul>
+<p>其传参形式为：<code>splice(从第几位开始切[从0开始计数],截取多少长度,要在切口处添加的新数据)</code>；它会以数组的形式将截取出的数据返回</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, 2, 3, 4, 5];</span><br><span class="line">arr.splice(1, 2, 100,188);&#x2F;&#x2F; [2, 3]</span><br><span class="line">console.log(arr); &#x2F;&#x2F; [1, 100, 188, 4, 5]</span><br></pre></td></tr></table></figure>
+
+<p>如果我们不写要添加的数据的话，这个方法就变成了在数组中删除数据的作用了；如果我们截取的长度是0，然后添加数据的话，这个方法就变成了在数据的特定位置添加数据的作用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, 2, 3, 4, 5];</span><br><span class="line">arr.splice(1,0,23,44,55);&#x2F;&#x2F;[]</span><br><span class="line">console.log(arr);&#x2F;&#x2F; [1, 23, 44, 55, 2, 3, 4, 5]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>sort</code></li>
+</ul>
+<p>其用于数组排序；返回排完序后的原数组</p>
+<p>其传参形式为：<code>sort(fn(a,b)&#123;...&#125;)</code>。即传入的参数必须是只有两个形参的一个函数，该函数要比较两个值，然后返回一个用于说明这两个值的相对顺序的值：</p>
+<ul>
+<li>若返回负值，则a在b前面  </li>
+<li>若返回正值，则b在a前面  </li>
+<li>若返回0，则不动</li>
+</ul>
+<p>其是按照冒泡排序从数组中取元素赋予<code>a</code>和<code>b</code>两个参数的：第一个元素和后面所有元素逐个比；然后第二个元素和后面所有元素比；……</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var obj1 &#x3D; &#123;</span><br><span class="line">    name : &#39;德洛丽丝&#39;,</span><br><span class="line">    age : 13,</span><br><span class="line">    sex : &#39;male&#39;</span><br><span class="line">&#125;</span><br><span class="line">var obj2 &#x3D; &#123;</span><br><span class="line">    name : &#39;伯纳德&#39;,</span><br><span class="line">    age : 7,</span><br><span class="line">    sex : &#39;female&#39;</span><br><span class="line">&#125;</span><br><span class="line">var obj3 &#x3D; &#123;</span><br><span class="line">    name : &#39;黑尔&#39;,</span><br><span class="line">    age : 15,</span><br><span class="line">    sex : &#39;male&#39;</span><br><span class="line">&#125;</span><br><span class="line">var arr &#x3D; [obj1, obj2, obj3];</span><br><span class="line">&#x2F;*要求按照元素的年龄大小进行排序*&#x2F;</span><br><span class="line">arr.sort(function(a, b)&#123;</span><br><span class="line">    return a.age - b.age;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="不改变原数组"><a href="#不改变原数组" class="headerlink" title="不改变原数组"></a>不改变原数组</h2><ul>
+<li><code>concat</code></li>
+</ul>
+<p>其传参形式为<code>concat(value...)</code>，其将各个参数衔接到数组中；返回一个新数组；若参数是数组那么连接的是参数数组中的各个元素而非参数数组本身；该方法使用的是浅拷贝</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, 2, 3];</span><br><span class="line">arr.concat([4,5,6,[7,8,9]],10,11)&#x2F;&#x2F;[1, 2, 3, 4, 5, 6, [7, 8, 9], 10, 11]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>join</code></li>
+</ul>
+<p>参数形式为<code>join(分隔符)</code>；其通过<code>分隔符</code>将数组中的各元素连接为字符串并返回，未指定<code>分隔符</code>时默认使用<code>,</code>连接；在连接时其会将数组中的每个元素转换为字符串进行连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#123;&#125;]</span><br><span class="line">var str &#x3D; arr.join(&#39;-&#39;);</span><br><span class="line">console.log(str); &#x2F;&#x2F; a-b-c-[object Object]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>slice</code></li>
+</ul>
+<p>参数形式为<code>slice(start, end)</code>；其从已有的数组中返回选定的元素，返回值为选中的元素组成的数组；当没有参数时，选中所有元素；当只有一个参数时，选中从该位到数组末尾的所有元素；当为<code>slice(start,end)</code>时，选中<code>[start,end)</code>间的元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, 2, 3];</span><br><span class="line">arr.slice(1,2);&#x2F;&#x2F;[2]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>split</code></li>
+</ul>
+<p>参数形式为<code>split(分隔符)</code>；用于将字符串转换为数组(以<code>分隔符</code>进行分割)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var str &#x3D; &#39;a-b-c-d&#39;;</span><br><span class="line">var arr &#x3D; str.split(&#39;-&#39;);</span><br><span class="line">console.log(arr); &#x2F;&#x2F; [a, b, c, d]</span><br></pre></td></tr></table></figure>
+
+<h2 id="数组遍历方法"><a href="#数组遍历方法" class="headerlink" title="数组遍历方法"></a>数组遍历方法</h2><p>ECMAScript5中提供了5个数组遍历方法，除了<code>reduce</code>与<code>reduceRight</code>，其他方法都遵循如下规则：</p>
+<ol>
+<li>每个遍历方法都接收2个参数——要在数组中的每一项上运行的函数和运行该函数的作用域对象(即改变所运行函数中的<code>this</code>值，该参数可省)</li>
+<li>传入这些遍历方法中的函数会接收三个参数：遍历出的每一个数组元素、该元素在数组中的索引、数组对象本身(这些参数都是可省的)</li>
+</ol>
+<ul>
+<li><code>forEach(function(item, index, arr)&#123;&#125;, 参数2)</code></li>
+</ul>
+<p>其无返回值，其用于遍历数组元素并进行处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [</span><br><span class="line">    &#123;name:&#39;德洛丽丝&#39;, age:27&#125;,</span><br><span class="line">    &#123;name:&#39;伯纳德&#39;, age:37&#125;</span><br><span class="line">];</span><br><span class="line">arr.forEach(function(item, index, arr)&#123;&#x2F;&#x2F;虽然写了三个形参，但是只用了item</span><br><span class="line">    item.age +&#x3D; 1;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(arr);</span><br><span class="line">&#x2F;&#x2F;[&#123;name:&#39;德洛丽丝&#39;, age:28&#125;,&#123;name:&#39;伯纳德&#39;, age:38&#125;];</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>map(function(item, index, arr)&#123;&#125;, 参数2)</code></li>
+</ul>
+<p>返回值： 对数组中的每一项运行给定的函数，返回由每次函数调用的结果组成的数组。因此不改变原数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1, 2, 3]</span><br><span class="line">var newArr &#x3D; arr.map(function(item, index, arr)&#123;</span><br><span class="line">	return item + 1;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(newArr);&#x2F;&#x2F;[2, 3, 4]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>filter(function(item, index, arr)&#123;&#125;, 参数2)</code></li>
+</ul>
+<p>传入的函数返回<code>true/false</code>(可以理解为真值与假值)以判断遍历出的数组元素是否符合筛选条件。返回值为符合筛选条件的元素组成的数组。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [</span><br><span class="line">    &#123;name:&#39;aa&#39;, age:18, like:&#39;cat&#39;&#125;,</span><br><span class="line">    &#123;name:&#39;bb&#39;, age:19, like:&#39;dog&#39;&#125;,</span><br><span class="line">    &#123;name:&#39;teacherD&#39;, age:20, like:&#39;eat&#39;&#125;,</span><br><span class="line">    &#123;name:&#39;cc&#39;, age:21, like:&#39;fish&#39;&#125;</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">var newArr &#x3D; arr.filter(function(item, index, arr)&#123;</span><br><span class="line">	if(item.age &gt; 18)&#123;&#x2F;&#x2F;筛选出年龄大于18的人</span><br><span class="line">		return true;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(newArr);</span><br><span class="line">&#x2F;*</span><br><span class="line">[</span><br><span class="line">    &#123;name:&#39;bb&#39;, age:19, like:&#39;dog&#39;&#125;,</span><br><span class="line">    &#123;name:&#39;teacherD&#39;, age:20, like:&#39;eat&#39;&#125;,</span><br><span class="line">    &#123;name:&#39;cc&#39;, age:21, like:&#39;fish&#39;&#125;</span><br><span class="line">]</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong>这类似于一种浅层克隆，因此若涉及引用值，应小心。例如：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [</span><br><span class="line">       &#123;name:&#39;aa&#39;, age:18, like:&#39;cat&#39;&#125;,</span><br><span class="line">       &#123;name:&#39;bb&#39;, age:19, like:&#39;dog&#39;&#125;,</span><br><span class="line">       &#123;name:&#39;teacherD&#39;, age:20, like:&#39;eat&#39;&#125;,</span><br><span class="line">       &#123;name:&#39;cc&#39;, age:21, like:&#39;fish&#39;&#125;</span><br><span class="line">   ];</span><br><span class="line"></span><br><span class="line">var newArr &#x3D; arr.filter(function(item, index, arr)&#123;</span><br><span class="line">	if(item.age &gt; 18)&#123;&#x2F;&#x2F;筛选出年龄大于18的人</span><br><span class="line">		return true;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">arr[1].name &#x3D; &#39;ma&#39;;</span><br><span class="line">console.log(newArr);&#x2F;&#x2F;newArr中的name也会变</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>every(function(item,index,arr)&#123;&#125;,参数2)</code>与<code>some(function(item,index,arr)&#123;&#125;,参数2)</code></li>
+</ul>
+<p>返回值：<code>true/false</code></p>
+<p>一旦<code>every</code>与<code>some</code>确认该返回什么值时，他们就会停止遍历数组，这就类似于<code>&amp;&amp;</code>与<code>||</code>。否则他们将遍历整个数组</p>
+<p><strong>1. every：</strong></p>
+<p><code>every</code>是针对数组中的所有元素。当且仅当针对数组中的所有元素调用判定函数都返回true，该方法才返回true(判定函数应该有返回值，返回值为真值或价值)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3,4,5];</span><br><span class="line"></span><br><span class="line">var result &#x3D; arr.every(function(item, index, arr)&#123;</span><br><span class="line">	return item &lt; 6;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(result);&#x2F;&#x2F;true，所有元素都小于6</span><br><span class="line"></span><br><span class="line">var result2 &#x3D; arr.every(function(item, index, arr)&#123;</span><br><span class="line">	return item%2 &#x3D;&#x3D;&#x3D; 0;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(result2);&#x2F;&#x2F;false，不是所有元素都是偶数</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. some：</strong></p>
+<p>只要数组中有一个元素调用判定函数返回true，那么该方法就返回true。当所有元素调用判定函数都返回false，该方法才返回false</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3,4,5];</span><br><span class="line"></span><br><span class="line">var result2 &#x3D; arr.some(function(item, index, arr)&#123;</span><br><span class="line">	result item%2 &#x3D;&#x3D;&#x3D; 0;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(result2);&#x2F;&#x2F;true</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>reduce(function(prev, item, index, arr)&#123;&#125;, init)</code>与<code>reduceRight(function(prev, item, index, arr)&#123;&#125;, init)</code></li>
+</ul>
+<p><strong>1. reduce</strong></p>
+<p>处理函数在每次调用后应返回一个结果。</p>
+<p>prev表示处理函数上一次运算的结果、item表示遍历出的数组元素、index表示下标、arr表示原数组(item、index、arr三个参数含义同上面几个遍历方法中的一致)、init表示prev的初始值(可省略)——即在第一次调用处理函数时，prev的值。如果省略init，则在第一次调用处理函数时，prev的值为数组中第一个元素的值，item为数组中第二个元素的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3,4,5];</span><br><span class="line">var sum &#x3D; arr.reduce(function(prev, item, index, arr)&#123;</span><br><span class="line">	return prev + item;</span><br><span class="line">&#125;,0);</span><br><span class="line">console.log(sum);&#x2F;&#x2F;15,求和</span><br></pre></td></tr></table></figure>
+
+<p>执行步骤为：<br>第一次调用prev=init=0,固返回值为0+1=1  -&gt;  第二次调用prev为上一次运算的结果(即1)，item=2,固返回值为1+2=3  ……</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var arr &#x3D; [1,2,3,4,5];</span><br><span class="line">var max &#x3D; arr.reduce(function(prev, item, index, arr)&#123;</span><br><span class="line">	return prev &gt; item ? preve : item;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(max);&#x2F;&#x2F;5,求最大值</span><br></pre></td></tr></table></figure>
+
+<p>执行步骤为：<br>第一次调用由于省略了init，固prev=arr[0]=1,固返回值为2  -&gt;  第二次调用prev为上一次运算的结果(即2)，item=3,固返回值为3  ……</p>
+<p><strong>2. reduceRight：</strong></p>
+<p>同reduce方法一样，只是它是从右向左遍历数组。如果未指定init，这prev初始值为数组中最后一个元素，item为数组中倒数第二个元素</p>
+<h2 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h2><ul>
+<li><code>indexOf(searchElement, fromIndex)</code>与<code>lastIndexOf(searchElement,fromIndex)</code></li>
+</ul>
+<p><code>indexOf</code>与<code>lastIndexOf</code>将在整个数组中搜索<code>searchElement</code>，并返回找到的第一个元素的索引。如果没有找到就返回<code>-1</code></p>
+<p>两者都是按照‘严格相等(即===)’进行匹配的</p>
+<p><strong>indexOf(searchElement, fromIndex)</strong></p>
+<p>1.默认从头到尾搜索。如果制定了第二个参数，则从指定的索引处开始从头到尾搜索</p>
+<p>2.如果<code>fromIndex</code>大于或等于数组<code>length</code>，则返回<code>-1</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var array &#x3D; [2, 9, 9];</span><br><span class="line">array.indexOf(2);     &#x2F;&#x2F; 0</span><br><span class="line">array.indexOf(7);     &#x2F;&#x2F; -1</span><br><span class="line">array.indexOf(9, 2);  &#x2F;&#x2F; 2</span><br></pre></td></tr></table></figure>
+
+<p><strong>lastIndexOf(searchElement, fromIndex)</strong></p>
+<p>1.默认反向即从尾到头搜索。如果制定了第二个参数，则从指定的索引处开始从尾到头搜索</p>
+<p>2.如果<code>fromIndex</code>大于或等于数组<code>length</code>，依旧会从头到尾搜索整个数组，不会报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var numbers &#x3D; [2, 5, 9, 2];</span><br><span class="line">numbers.lastIndexOf(2);     &#x2F;&#x2F; 3</span><br><span class="line">numbers.lastIndexOf(7);     &#x2F;&#x2F; -1</span><br><span class="line">numbers.lastIndexOf(2, 3);  &#x2F;&#x2F; 3</span><br><span class="line">numbers.lastIndexOf(2, 2);  &#x2F;&#x2F; 0</span><br></pre></td></tr></table></figure>
+
+<h1 id="类数组"><a href="#类数组" class="headerlink" title="类数组"></a>类数组</h1><p>拥有<code>length</code>属性的对象即为类数组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var obj &#x3D; &#123;</span><br><span class="line">	length:0,</span><br><span class="line">	push : Array.prototype.push</span><br><span class="line">&#125;</span><br><span class="line">obj.push(&#39;a&#39;);</span><br><span class="line">console.log(obj);</span><br><span class="line">&#x2F;*</span><br><span class="line">&#123;0: &quot;a&quot;, length: 1, push: ƒ&#125;</span><br><span class="line">	0: &quot;a&quot;</span><br><span class="line">	length: 1</span><br><span class="line">	push: ƒ push()</span><br><span class="line">	__proto__: Object</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>由于类数组并不继承自<code>Array.prototype</code>，因此类数组要想使用<code>Array.prototype</code>中的方法可用<code>call/apply</code></p>
+<blockquote>
+<p><code>arguments</code>就是一个类数组</p>
+</blockquote>
+<p>下面是一个类数组的小练习：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var obj &#x3D; &#123;</span><br><span class="line">	2 : &quot;a&quot;,</span><br><span class="line">	3 : &quot;b&quot;,</span><br><span class="line">	length : 2,</span><br><span class="line">	push : Array.prototype.push</span><br><span class="line">&#125;</span><br><span class="line">obj.push(&quot;c&quot;);</span><br><span class="line">obj.push(&quot;d&quot;);</span><br><span class="line">&#x2F;&#x2F;问obj最后内容是什么？</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(13)%20%E5%8E%9F%E5%9E%8B/" rel="prev" title="原型">
+      <i class="fa fa-chevron-left"></i> 原型
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(15)%20try...catch%E4%B8%8E%E9%94%99%E8%AF%AF/" rel="next" title="try...catch与错误">
+      try...catch与错误 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">数组的创建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E4%B8%8E%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">数组与对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">数组的特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#length%E5%B1%9E%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">length属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%80%E7%96%8F%E6%95%B0%E7%BB%84"><span class="nav-number">5.</span> <span class="nav-text">稀疏数组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%96%B9%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">数组方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E5%8F%98%E5%8E%9F%E6%95%B0%E7%BB%84"><span class="nav-number">6.1.</span> <span class="nav-text">改变原数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E6%94%B9%E5%8F%98%E5%8E%9F%E6%95%B0%E7%BB%84"><span class="nav-number">6.2.</span> <span class="nav-text">不改变原数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%96%B9%E6%B3%95"><span class="nav-number">6.3.</span> <span class="nav-text">数组遍历方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95"><span class="nav-number">6.4.</span> <span class="nav-text">其他方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E6%95%B0%E7%BB%84"><span class="nav-number">7.</span> <span class="nav-text">类数组</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">73k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:06</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

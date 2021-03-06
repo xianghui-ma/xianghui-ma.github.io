@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="虽然通常将JS归类为“解释型语言”，但事实上它是一门编译语言。因为JS代码在执行前一刻需进行编译——即预编译，预编译完成后JS引擎才会执行代码。预编译又分为全局预编译和函数预编译 函数预编译函数预编译按下述顺序进行：  创建AO（Activation Object）对象，即执行器上下文 找形参和变量声明，将变量声明的名和形参名作为AO对象的属性名，值为undefined（这步就是所谓的：变量声明提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="预编译">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(06)%20%E9%A2%84%E7%BC%96%E8%AF%91/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="虽然通常将JS归类为“解释型语言”，但事实上它是一门编译语言。因为JS代码在执行前一刻需进行编译——即预编译，预编译完成后JS引擎才会执行代码。预编译又分为全局预编译和函数预编译 函数预编译函数预编译按下述顺序进行：  创建AO（Activation Object）对象，即执行器上下文 找形参和变量声明，将变量声明的名和形参名作为AO对象的属性名，值为undefined（这步就是所谓的：变量声明提">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T06:23:29.679Z">
+<meta property="article:modified_time" content="2021-03-06T06:18:21.991Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(06)%20%E9%A2%84%E7%BC%96%E8%AF%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>预编译 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(06)%20%E9%A2%84%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          预编译
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:18:21" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>虽然通常将JS归类为“解释型语言”，但事实上它是一门编译语言。因为JS代码在<code>执行前一刻</code>需进行编译——即预编译，预编译完成后JS引擎才会执行代码。预编译又分为全局预编译和函数预编译</p>
+<h1 id="函数预编译"><a href="#函数预编译" class="headerlink" title="函数预编译"></a>函数预编译</h1><p>函数预编译按下述顺序进行：</p>
+<ol>
+<li>创建AO（Activation Object）对象，即执行器上下文</li>
+<li>找形参和变量声明，将变量声明的名和形参名作为AO对象的属性名，值为<code>undefined</code>（这步就是所谓的：变量声明提升）</li>
+<li>将实参值和形参统一</li>
+<li>在函数体里面找到函数声明，将函数声明的名作为AO对象的属性名，值为函数体（这步就是所谓的：函数声明整体提升）</li>
+</ol>
+<span id="more"></span>
+
+<p>示例和AO对象构建与变化过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function test(a, b)&#123;</span><br><span class="line">    console.log(a);	&#x2F;&#x2F;function a()&#123;&#125;</span><br><span class="line">    console.log(b);	&#x2F;&#x2F;undefined</span><br><span class="line">    var b &#x3D; 234;	&#x2F;&#x2F;（1）</span><br><span class="line">    console.log(b);	&#x2F;&#x2F;234</span><br><span class="line">    a &#x3D; 123;		&#x2F;&#x2F;（2）</span><br><span class="line">    console.log(a);	&#x2F;&#x2F;123</span><br><span class="line">    function a()&#123;&#125;;</span><br><span class="line">    var a;</span><br><span class="line">    b &#x3D; 234;		&#x2F;&#x2F;（3）</span><br><span class="line">    var b &#x3D; function()&#123;&#125;;	&#x2F;&#x2F;（4）</span><br><span class="line">    console.log(a);	&#x2F;&#x2F;123</span><br><span class="line">    console.log(b);	&#x2F;&#x2F;function ()&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">test(1);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>由于函数在执行前需要进行函数预编译，因此在JS引擎真正执行<code>test</code>函数前会先对<code>test函数</code>进行预编译生成<code>test函数</code>的AO对象</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">AO&#123;</span><br><span class="line"></span><br><span class="line">&#125;&#x3D;&#x3D;&gt;AO&#123;</span><br><span class="line">    a : undefined</span><br><span class="line">    b : undefined</span><br><span class="line">&#125;&#x3D;&#x3D;&gt;AO&#123;</span><br><span class="line">    a : 1</span><br><span class="line">    b : undefined</span><br><span class="line">&#125;&#x3D;&#x3D;&gt;AO&#123;</span><br><span class="line">    a : function a()&#123;&#125;</span><br><span class="line">    b : undefined</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>AO对象创建完毕，函数预编译结束。接着JS引擎开始调用执行函数。在函数执行过程中，AO对象的变化如下</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">AO&#123;&#x2F;&#x2F;执行（1）后</span><br><span class="line">    a : function a()&#123;&#125;</span><br><span class="line">    b : 234</span><br><span class="line">&#125;&#x3D;&#x3D;&gt;AO&#123;&#x2F;&#x2F;执行（2）后</span><br><span class="line">	a : 123</span><br><span class="line">    b : 234</span><br><span class="line">&#125;&#x3D;&#x3D;&gt;AO&#123;&#x2F;&#x2F;执行（3）后</span><br><span class="line">	a : 123</span><br><span class="line">	b : 234</span><br><span class="line">&#125;&#x3D;&#x3D;&gt;AO&#123;&#x2F;&#x2F;执行（4）后</span><br><span class="line">	a : 123</span><br><span class="line">	b : function()&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是一个小练习，不妨自己试试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function fn(a)&#123;</span><br><span class="line">    console.log(a);</span><br><span class="line">    var a &#x3D; 123;</span><br><span class="line">    console.log(a);</span><br><span class="line">    function a()&#123;&#125;</span><br><span class="line">    console.log(a);</span><br><span class="line">    var b &#x3D; function()&#123;&#125;;</span><br><span class="line">    console.log(b);</span><br><span class="line">    function d()&#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line">fn(1);.</span><br></pre></td></tr></table></figure>
+
+<h1 id="全局预编译"><a href="#全局预编译" class="headerlink" title="全局预编译"></a>全局预编译</h1><p>全局预编译按下述顺序进行：</p>
+<ol>
+<li>创建GO（Global Object）对象，即全局对象<code>window</code>（GO就是<code>window</code>）</li>
+<li>找变量声明，将变量声明的名作为GO对象的属性名，值为<code>undefined</code>（这步就是所谓的：变量声明提升）</li>
+<li>找函数声明，将函数声明的名作为GO对象的属性名，值为函数体（这步就是所谓的：函数声明整体提升）</li>
+</ol>
+<p>示例和GO对象构建与变化过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">console.log(test);	&#x2F;&#x2F;function test(test)&#123;...&#125;</span><br><span class="line">function test(test)&#123;</span><br><span class="line">    console.log(test);</span><br><span class="line">    var test &#x3D; 234;</span><br><span class="line">    console.log(test);</span><br><span class="line">    function test()&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">test(1);</span><br><span class="line">var test &#x3D; 123;	&#x2F;&#x2F;（1）</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>JS在引擎在执行JS代码前会先对整个JS代码进行预编译——即全局预编译。全局预编译过程所构建的GO对象如下</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GO&#123;</span><br><span class="line">	</span><br><span class="line">&#125;&#x3D;&#x3D;&gt;GO&#123;</span><br><span class="line">	test : undefined</span><br><span class="line">&#125;&#x3D;&#x3D;&gt;GO&#123;</span><br><span class="line">	test : function test(test)&#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>GO对象创建完毕，全局预编译结束。接着JS引擎开始执行代码，在执行<code>test(1)</code>前一刻的函数预编译可参考前面的过程。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GO&#123;&#x2F;&#x2F;执行（1）后</span><br><span class="line">	test : 123</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是一个小练习，不妨自己试试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    console.log(b);</span><br><span class="line">    if(a)&#123;</span><br><span class="line">        var b &#x3D; 100;</span><br><span class="line">    &#125;</span><br><span class="line">    c &#x3D; 234;</span><br><span class="line">    console.log(c);</span><br><span class="line">&#125;</span><br><span class="line">var a;</span><br><span class="line">test();</span><br><span class="line">a &#x3D; 10;</span><br><span class="line">console.log(c);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>GO先于AO生成</li>
+<li>由于在预编译过程中已经对函数声明与变量声明做了处理，因此JS引擎在执行代码时会忽略函数声明与变量声明</li>
+<li>在创建AO/GO时，相同的名字只在AO/GO对象中挂一次</li>
+</ol>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(05)%20%E5%87%BD%E6%95%B0%E5%88%9D%E8%AF%86/" rel="prev" title="函数初识">
+      <i class="fa fa-chevron-left"></i> 函数初识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(07)%20%E4%BD%9C%E7%94%A8%E5%9F%9F/" rel="next" title="作用域">
+      作用域 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">1.</span> <span class="nav-text">函数预编译</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">2.</span> <span class="nav-text">全局预编译</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">73k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:06</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
