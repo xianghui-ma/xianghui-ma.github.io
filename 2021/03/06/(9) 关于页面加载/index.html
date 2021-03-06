@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本篇文章主要讨论与页面加载相关的一些事件；异步加载JS；整个页面解析过程中的处理方式 事件document相关 DOMContentLoaded  该事件位于document对象上，且只能使用addEventListener对其进行监听；该事件的触发时机是：HTML结构加载完毕且DOM Tree也构建完毕[此时外部资源（&lt;img&gt;&#x2F;样式表&#x2F;外部JS文件……）或许并未加载完毕] 1234">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(9)关于页面加载">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(9)%20%E5%85%B3%E4%BA%8E%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="本篇文章主要讨论与页面加载相关的一些事件；异步加载JS；整个页面解析过程中的处理方式 事件document相关 DOMContentLoaded  该事件位于document对象上，且只能使用addEventListener对其进行监听；该事件的触发时机是：HTML结构加载完毕且DOM Tree也构建完毕[此时外部资源（&lt;img&gt;&#x2F;样式表&#x2F;外部JS文件……）或许并未加载完毕] 1234">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T06:43:15.031Z">
+<meta property="article:modified_time" content="2021-03-06T06:52:39.977Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(9)%20%E5%85%B3%E4%BA%8E%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(9)关于页面加载 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(9)%20%E5%85%B3%E4%BA%8E%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (9)关于页面加载
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:43:15 / 修改时间：14:52:39" itemprop="dateCreated datePublished" datetime="2021-03-06T14:43:15+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DOM%E4%B8%8EBOM/" itemprop="url" rel="index"><span itemprop="name">DOM与BOM</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本篇文章主要讨论与页面加载相关的一些事件；异步加载JS；整个页面解析过程中的处理方式</p>
+<h1 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h1><h2 id="document相关"><a href="#document相关" class="headerlink" title="document相关"></a>document相关</h2><ul>
+<li><code>DOMContentLoaded</code></li>
+</ul>
+<p>该事件位于<code>document</code>对象上，且只能使用<code>addEventListener</code>对其进行监听；该事件的触发时机是：HTML结构加载完毕且<code>DOM Tree</code>也构建完毕[此时外部资源（<code>&lt;img&gt;</code>/样式表/外部JS文件……）或许并未加载完毕]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        document.addEventListener(&quot;DOMContentLoaded&quot;, function()&#123;</span><br><span class="line">            var img &#x3D; document.getElementById(&quot;img&quot;);</span><br><span class="line">            console.log(&quot;width:&quot; + img.offsetWidth + &quot;;&quot; + &quot;height:&quot; + img.offsetHeight);&#x2F;&#x2F;width:0;height:0</span><br><span class="line">        &#125;, false);</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">    &lt;img id&#x3D;&quot;img&quot; src&#x3D;&quot;https:&#x2F;&#x2F;en.js.cx&#x2F;clipart&#x2F;train.gif?speed&#x3D;1&amp;cache&#x3D;0&quot;&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p><code>DOM Tree</code>构建完毕后<code>DOMContentLoaded</code>事件便会触发，因此我们可以获取到<code>img</code>节点；但是由于此时图片还未加载完毕，因此获取到的图片宽高均为0</p>
+<ul>
+<li><code>document.readyState</code>属性与<code>readystatechange</code>事件</li>
+</ul>
+<p>该属性用于获取文档的当前加载状态，其有3个值：</p>
+<ol>
+<li><code>loading</code>表明文档正在加载中</li>
+<li><code>interactive</code>表明文档的HTML结构已经加载完毕且<code>DOM Tree</code>也已经构建完毕</li>
+<li><code>complete</code>表明文档的HTML结构已经加载完毕且<code>DOM Tree</code>也已经构建完毕且所有外部资源也已加载完毕</li>
+</ol>
+<p>与此同时，<code>document</code>还提供了<code>readystatechange</code>事件，该事件会在<code>readyState</code>状态发生改变时触发，因此我们可以通过该事件来追踪文档的当前加载状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        console.log(&quot;current state: loading&quot;);</span><br><span class="line">        document.addEventListener(&quot;readystatechange&quot;, function()&#123;</span><br><span class="line">            console.log(&quot;current state: &quot; + document.readyState);</span><br><span class="line">        &#125;);</span><br><span class="line">        &#x2F;&#x2F; current state: loading</span><br><span class="line">        &#x2F;&#x2F; current state: interactive</span><br><span class="line">		&#x2F;&#x2F;......会等待一段时间......</span><br><span class="line">        &#x2F;&#x2F; current state: complete</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">    &lt;img id&#x3D;&quot;img&quot; src&#x3D;&quot;https:&#x2F;&#x2F;en.js.cx&#x2F;clipart&#x2F;train.gif?speed&#x3D;1&amp;cache&#x3D;0&quot;&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>我们可以看到，<code>interactive</code>状态的出现时机与<code>DOMContentLoaded</code>事件的触发时机是一致的，因此它们是同时发生的，只不过是<code>interactive</code>先发生，紧接着立刻马上<code>DOMContentLoaded</code>事件触发</li>
+<li>“文档的HTML结构加载完毕且<code>DOM Tree</code>构建完毕”便意味着我们可以使用JS操作DOM节点了，但是此时可能外部css/图片等还未加载完毕，因此像获取元素尺寸等操作可能并不能得到元素的真正尺寸</li>
+</ol>
+</blockquote>
+<h2 id="window相关"><a href="#window相关" class="headerlink" title="window相关"></a>window相关</h2><ul>
+<li><code>load</code></li>
+</ul>
+<p>当HTML结构被解析完毕且<code>DOM Tree</code>构建完毕且外部资源加载完毕时，<code>window</code>对象上的<code>load</code>事件将被触发</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>该事件很少用（或者说应避免使用），因为其是在整个页面的所有内容都准备就绪后才触发执行，因此倘若某个外部资源由于网络等原因而迟迟不能加载完毕，那么<code>load</code>不``得不一直等待</li>
+<li>上面的<code>complete</code>状态的出现时机与<code>load</code>事件的触发时机是一致的，因此它们是同时发生的，只不过是<code>complete</code>先发生，紧接着立刻马上<code>load</code>事件触发</li>
+</ol>
+</blockquote>
+<h1 id="异步加载JS"><a href="#异步加载JS" class="headerlink" title="异步加载JS"></a>异步加载JS</h1><p>在讨论如何实现JS的异步加载之前不妨先想想为什么需要异步加载JS？这是因为：</p>
+<p>在浏览器解析HTML的过程中，如果其遇见了<code>&lt;script&gt;...&lt;/script&gt;</code>标签，那么浏览器便会暂停解析HTML转而执行<code>&lt;script&gt;...&lt;/script&gt;</code>标签中的代码，只有等代码执行完毕后浏览器才会继续解析HTML结构；同样的，如果在解析HTML过程中遇见了<code>&lt;script src=&quot;...&quot;&gt;&lt;/script&gt;</code>标签，那么浏览器也会暂停解析HTML转而去加载这个外部JS文件，且只有等加载完毕并执行完毕该外部JS文件后浏览器才会继续解析HTML。总结来说就是，<code>&lt;script&gt;</code>会阻塞页面中后续内容的加载</p>
+<p>而上述特性便会导致一些问题。例如，如果<code>&lt;script&gt;</code>后面还有HTML结构的话，那么对于<code>&lt;script&gt;</code>中的代码而言，这些HTML结构是不可见的，因此我们便不能对后面的DOM节点进行操作；又譬如，在文档顶部我们引入了一个较大的外部JS文件，那么如果该外部JS文件加载时间过长的话便会导致后续内容无法被解析，从而用户将在很长一段时间内不能看到页面内容</p>
+<h2 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h2><p>给引入外部JS的<code>&lt;script&gt;</code>标签添加一个<code>defer</code>属性便能实现JS的异步加载。该异步加载方式具有如下特点：</p>
+<ul>
+<li>不会阻塞页面。因为如果在解析HTML文档的过程中遇见了带有<code>defer</code>属性的<code>&lt;script src=&quot;...&quot;&gt;&lt;/script&gt;</code>标签，那么浏览器会另开一个线程异步加载外部JS文件</li>
+<li>外部JS文件异步加载完成后并不会立即执行，其会等到HTML结构已经加载完毕且<code>DOM Tree</code>也已经构建完毕后才会执行（但先于<code>DOMContentLoaded</code>执行）。且执行顺序与书写顺序保持一致</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script defer src&#x3D;&quot;https:&#x2F;&#x2F;javascript.info&#x2F;article&#x2F;script-async-defer&#x2F;long.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;script defer src&#x3D;&quot;https:&#x2F;&#x2F;javascript.info&#x2F;article&#x2F;script-async-defer&#x2F;small.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如上，虽然<code>small.js</code>会先加载完毕，但是由于执行顺序与书写顺序保持一致，因此<code>long.js</code>先执行，然后<code>small.js</code>再执行</p>
+<h2 id="async"><a href="#async" class="headerlink" title="async"></a>async</h2><p>给引入外部JS的<code>&lt;script&gt;</code>标签添加一个<code>async</code>属性也能实现JS的异步加载。该异步加载方式具有如下特点：</p>
+<ul>
+<li>不会阻塞页面。因为如果在解析HTML文档的过程中遇见了带有<code>async</code>属性的<code>&lt;script src=&quot;...&quot;&gt;&lt;/script&gt;</code>标签，那么浏览器会另开一个线程异步加载外部JS文件</li>
+<li>谁先加载完谁就立即执行（不会等到<code>DOM Tree</code>构建完毕才执行），不会按照书写顺序来执行（执行也是异步的）</li>
+</ul>
+<blockquote>
+<p>带有<code>async</code>的<code>script</code>是一个自由个体，其加载完就立即执行，不会关心页面中的某某其他内容是否准备就绪</p>
+</blockquote>
+<h2 id="动态添加script标签"><a href="#动态添加script标签" class="headerlink" title="动态添加script标签"></a>动态添加script标签</h2><p>通过动态创建<code>script</code>标签添加到页面，我们也能实现异步加载外部JS。即如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var script &#x3D; document.createElement(&#39;script&#39;);</span><br><span class="line">script.src &#x3D; &quot;&#x2F;article&#x2F;script-async-defer&#x2F;long.js&quot;;</span><br><span class="line">document.body.append(script);&#x2F;&#x2F;（1）</span><br></pre></td></tr></table></figure>
+
+<p>该异步加载方式具有如下特点：</p>
+<ul>
+<li>创建的<code>script</code>标签一被添加到页面中（<code>(1)</code>操作）则马上另起一个线程异步加载JS</li>
+<li>除此之外，其他同<code>async</code></li>
+</ul>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>上述三种异步加载JS的方法仅用于加载外部JS，不用于内嵌在页面中的JS代码</li>
+<li>根据上述三种方法的特点：<code>defer</code>适用于加载那些需要依赖<code>DOM Tree</code>的JS文件，或各自间具有严格的相对执行顺序的JS文件；后两种方法适用于加载不依赖页面内容和其他JS的独立的JS文件</li>
+</ol>
+</blockquote>
+<h1 id="追踪外部资源加载状态"><a href="#追踪外部资源加载状态" class="headerlink" title="追踪外部资源加载状态"></a>追踪外部资源加载状态</h1><p>外部资源（JS/图片……）的加载无非两种状态——加载成功/失败。为了知道外部资源加载成功与否，所有的带有<code>src</code>属性的标签都有如下两个事件：</p>
+<ul>
+<li><code>load</code>外部资源加载成功时触发</li>
+<li><code>error</code>外部资源加载失败时触发</li>
+</ul>
+<p>这样，我们便可以通过这两个事件来追踪外部资源的加载状态，从而在加载成功/失败是做一些事情</p>
+<blockquote>
+<p><strong>注意：</strong><br>众所周知，我们可以动态创建带有<code>src</code>属性的标签，然后将他们添加到页面中。然而，对于这其中的大部分标签而言，只有将它们添加到页面中后，它们才会开始去加载外部资源；但是<code>img</code>标签是一个特例，在给<code>img</code>的<code>src</code>属性赋值时（及<code>imgObj.src=...</code>）就会开始加载图片</p>
+</blockquote>
+<h1 id="整个页面解析过程中的一些处理方式"><a href="#整个页面解析过程中的一些处理方式" class="headerlink" title="整个页面解析过程中的一些处理方式"></a>整个页面解析过程中的一些处理方式</h1><ul>
+<li>浏览器开始解析HTML文档，此时<code>document.readyState=loading</code></li>
+<li>遇到<code>link</code>外部css则创建线程异步加载，然后继续解析文档</li>
+<li>遇见内嵌<code>script</code>代码则停止解析文档并立即执行JS代码，待执行完后继续解析文档</li>
+<li>遇见<code>script</code>引入外部JS且<code>script</code>上设有<code>defer/async</code>属性，则创建线程异步加载JS文件，然后继续解析文档（对于<code>async</code>属性的脚本而言，脚本加载完后会立即异步执行）</li>
+<li>遇见<code>img</code>标签，浏览器会将<code>img</code>先挂到<code>DOM Tree</code>上，然后创建线程异步加载<code>img</code>，然后继续解析文档</li>
+<li>HTML文档解析完毕且<code>DOM Tree</code>构建完毕，<code>document.readyState=interactive</code>，此时所有<code>defer</code>脚本按照书写顺序执行</li>
+<li>待所有<code>defer</code>脚本执行完毕后<code>DOMContentLoaded</code>事件触发</li>
+<li>当所有<code>async</code>脚本加载并执行完且<code>img</code>等所有外部资源全部加载完，则<code>document.readyState=complete</code>，然后<code>window</code>的<code>load</code>事件触发</li>
+<li>至此，整个文档加载解析完成</li>
+</ul>
+<p><strong>参考：</strong></p>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://javascript.info/onload-ondomcontentloaded">Page: DOMContentLoaded, load, beforeunload, unload</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://javascript.info/script-async-defer">Scripts: async, defer</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://javascript.info/onload-onerror">Resource loading: onload and onerror</a></strong></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(16)%20%E4%B8%A5%E6%A0%BC%E6%A8%A1%E5%BC%8F/" rel="prev" title="(16)严格模式">
+      <i class="fa fa-chevron-left"></i> (16)严格模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(1)%20DOM%E6%A6%82%E8%BF%B0/" rel="next" title="(1)DOM概述">
+      (1)DOM概述 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#document%E7%9B%B8%E5%85%B3"><span class="nav-number">1.1.</span> <span class="nav-text">document相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#window%E7%9B%B8%E5%85%B3"><span class="nav-number">1.2.</span> <span class="nav-text">window相关</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BDJS"><span class="nav-number">2.</span> <span class="nav-text">异步加载JS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#defer"><span class="nav-number">2.1.</span> <span class="nav-text">defer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#async"><span class="nav-number">2.2.</span> <span class="nav-text">async</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%B7%BB%E5%8A%A0script%E6%A0%87%E7%AD%BE"><span class="nav-number">2.3.</span> <span class="nav-text">动态添加script标签</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%BD%E8%B8%AA%E5%A4%96%E9%83%A8%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD%E7%8A%B6%E6%80%81"><span class="nav-number">3.</span> <span class="nav-text">追踪外部资源加载状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E4%B8%AA%E9%A1%B5%E9%9D%A2%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">整个页面解析过程中的一些处理方式</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">100k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:31</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

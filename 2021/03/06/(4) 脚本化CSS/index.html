@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="脚本化CSS可通过下述两种方式实现CSS脚本化：  Element.style   该方式可读&#x2F;写。写入值时，值应用字符串表示 该方式只能读&#x2F;写HTML标签中的style属性。通过此种方式访问那些没在style属性中设置的CSS属性的值时会返回&quot;&quot; 该方式的返回值是一个对象 访问float属性时应使用cssFloat（因为float是JS的保留字）即Element.style.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(4)脚本化CSS">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(4)%20%E8%84%9A%E6%9C%AC%E5%8C%96CSS/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="脚本化CSS可通过下述两种方式实现CSS脚本化：  Element.style   该方式可读&#x2F;写。写入值时，值应用字符串表示 该方式只能读&#x2F;写HTML标签中的style属性。通过此种方式访问那些没在style属性中设置的CSS属性的值时会返回&quot;&quot; 该方式的返回值是一个对象 访问float属性时应使用cssFloat（因为float是JS的保留字）即Element.style.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T06:43:15.096Z">
+<meta property="article:modified_time" content="2021-03-06T06:48:20.867Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(4)%20%E8%84%9A%E6%9C%AC%E5%8C%96CSS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(4)脚本化CSS | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(4)%20%E8%84%9A%E6%9C%AC%E5%8C%96CSS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (4)脚本化CSS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 14:43:15 / 修改时间：14:48:20" itemprop="dateCreated datePublished" datetime="2021-03-06T14:43:15+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DOM%E4%B8%8EBOM/" itemprop="url" rel="index"><span itemprop="name">DOM与BOM</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="脚本化CSS"><a href="#脚本化CSS" class="headerlink" title="脚本化CSS"></a>脚本化CSS</h1><p>可通过下述两种方式实现CSS脚本化：</p>
+<ul>
+<li><code>Element.style</code></li>
+</ul>
+<ol>
+<li>该方式可读/写。写入值时，值应用字符串表示</li>
+<li>该方式只能读/写HTML标签中的<code>style</code>属性。通过此种方式访问那些没在<code>style</code>属性中设置的CSS属性的值时会返回<code>&quot;&quot;</code></li>
+<li>该方式的返回值是一个对象</li>
+<li>访问<code>float</code>属性时应使用<code>cssFloat</code>（因为<code>float</code>是JS的保留字）即<code>Element.style.cssFloat</code></li>
+<li>组合属性应该用小驼峰读/写，即应该是<code>Element.style.backgroundColor</code>而非<code>Element.style.background-color</code></li>
+<li>复合属性必须拆解为单个进行读/写，即如要读写<code>border</code>时应为<code>Element.style.borderStyle</code>,<code>Element.style.borderWidth</code>,<code>Element.style.borderColor</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    #outter&#123;</span><br><span class="line">        width : 200px;</span><br><span class="line">        height: 200px;</span><br><span class="line">        background-color: red;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">&lt;div id&#x3D;&quot;outter&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var outter &#x3D; document.getElementById(&quot;outter&quot;);</span><br><span class="line">    console.log(outter.style.backgroundColor);&#x2F;&#x2F;&quot;&quot;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>由上可知，<code>Element.style</code>操作的仅是标签的<code>style</code>属性，由于<code>background-color</code>不是设置在<code>style</code>属性上的，故不能通过此种方式进行读写</p>
+<ul>
+<li><code>window.getComputedStyle(Element, [pseudo])</code></li>
+</ul>
+<ol>
+<li>其返回一个对象，且其只读</li>
+<li><code>[pseudo]</code>为<code>Element</code>中的伪元素，该参数可选，不需要获取伪元素的样式时可省略该参数或传入<code>null</code></li>
+<li>与<code>Element.style</code>不同的是其返回的是经浏览器计算后的最终用于<code>Element</code>上的所有样式</li>
+<li>其返回值均为绝对值，如设置<code>height:10em</code>则<code>window.getComputedStyle(Element).heigth</code>返回<code>160px</code></li>
+<li>复合/组合属性的书写规范同<code>style</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    #outter&#123;</span><br><span class="line">        width : 200px;</span><br><span class="line">        height: 200px;</span><br><span class="line">        background-color: red;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">&lt;div id&#x3D;&quot;outter&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var outter &#x3D; document.getElementById(&quot;outter&quot;);</span><br><span class="line">    console.log(window.getComputedStyle(outter).backgroundColor);&#x2F;&#x2F;&quot;rgb(255, 0, 0)&quot;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>但是在IE中没有上述方法，故在IE中应使用<code>Element.currentStyle</code>。除了CSS样式的值不是绝对值（你设置什么值便返回什么值）外，其其他特性同<code>getComputedStyle</code></p>
+<p><strong>参考：</strong></p>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://javascript.info/styles-and-classes">Styles and classes</a></strong></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(3)%20DOM%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" rel="prev" title="(3)DOM基本操作">
+      <i class="fa fa-chevron-left"></i> (3)DOM基本操作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/(5)%20%E4%BA%8B%E4%BB%B6/" rel="next" title="(5)事件">
+      (5)事件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%8C%96CSS"><span class="nav-number">1.</span> <span class="nav-text">脚本化CSS</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">100k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:31</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
