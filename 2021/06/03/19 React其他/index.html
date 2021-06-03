@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="19 React其他Fragment前面我们说过：在JSX语法中，一个组件中的元素必须被包裹在一个根元素中 但是这样做会造成页面中出现不必要的标签，如下： 12345678910class Example extends React.Component &amp;#123;  render() &amp;#123;    return (      &lt;div&gt;        &lt;h1&gt;Hel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19 React其他">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/06/03/19%20React%E5%85%B6%E4%BB%96/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="19 React其他Fragment前面我们说过：在JSX语法中，一个组件中的元素必须被包裹在一个根元素中 但是这样做会造成页面中出现不必要的标签，如下： 12345678910class Example extends React.Component &amp;#123;  render() &amp;#123;    return (      &lt;div&gt;        &lt;h1&gt;Hel">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-03T09:52:29.761Z">
+<meta property="article:modified_time" content="2021-05-22T08:19:16.115Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/06/03/19%20React%E5%85%B6%E4%BB%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>19 React其他 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/06/03/19%20React%E5%85%B6%E4%BB%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          19 React其他
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-03 17:52:29" itemprop="dateCreated datePublished" datetime="2021-06-03T17:52:29+08:00">2021-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-22 16:19:16" itemprop="dateModified" datetime="2021-05-22T16:19:16+08:00">2021-05-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="19-React其他"><a href="#19-React其他" class="headerlink" title="19 React其他"></a>19 React其他</h1><h3 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h3><p>前面我们说过：在JSX语法中，一个组件中的元素必须被包裹在一个根元素中</p>
+<p>但是这样做会造成页面中出现不必要的标签，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Example extends React.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;Hello&lt;&#x2F;h1&gt;</span><br><span class="line">        &lt;h1&gt;World&lt;&#x2F;h1&gt;</span><br><span class="line">      &lt;&#x2F;div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样页面中就会多出<code>div</code>标签，而往往该根标签是为了配合JSX语法才设置的，故并不是必须的，因此我们不想在页面中多出该根标签</p>
+<p>此时便可以使用<code>Fragment</code>来代替根标签，且<code>Fragment</code>不会被渲染到页面中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Example extends React.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;Fragment&gt;</span><br><span class="line">        &lt;h1&gt;Hello&lt;&#x2F;h1&gt;</span><br><span class="line">        &lt;h1&gt;World&lt;&#x2F;h1&gt;</span><br><span class="line">      &lt;&#x2F;Fragment&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>更简便的，你也可以使用<code>Fragment</code>的短语法<code>&lt;&gt;&lt;/&gt;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Example extends React.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;&gt;</span><br><span class="line">        &lt;h1&gt;Hello&lt;&#x2F;h1&gt;</span><br><span class="line">        &lt;h1&gt;World&lt;&#x2F;h1&gt;</span><br><span class="line">      &lt;&#x2F;&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>你还可以在<code>Fragment</code>中使用<code>key</code>属性（即前面说到过的遍历时用于优化的<code>key</code>），但这在短语法中无效而仅在显示的使用<code>Fragment</code>时有效。且 <code>key</code> 是唯一可以传递给 <code>Fragment</code> 的属性</p>
+<h3 id="错误边界"><a href="#错误边界" class="headerlink" title="错误边界"></a>错误边界</h3><p>什么是错误边界？错误边界是一种 React 组件，这种组件可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI，而不是展现给用户一片爆红的错误</p>
+<p>如何定义一个错误边界组件？</p>
+<p>如果一个 class 组件中定义了 <a target="_blank" rel="noopener" href="https://zh-hans.reactjs.org/docs/react-component.html#static-getderivedstatefromerror"><code>static getDerivedStateFromError()</code></a>或<a target="_blank" rel="noopener" href="https://zh-hans.reactjs.org/docs/react-component.html#componentdidcatch"><code>componentDidCatch()</code></a>这两个生命周期方法中的任意一个（或两个）时，那么它就变成一个错误边界</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class ErrorBoundary extends React.Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.state &#x3D; &#123; hasError: false &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  static getDerivedStateFromError(error) &#123;</span><br><span class="line">    &#x2F;&#x2F; 更新 state 使下一次渲染能够显示降级后的 UI</span><br><span class="line">    return &#123; hasError: true &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidCatch(error, errorInfo) &#123;</span><br><span class="line">    &#x2F;&#x2F; 你同样可以将错误日志上报给服务器</span><br><span class="line">    logErrorToMyService(error, errorInfo);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    if (this.state.hasError) &#123;</span><br><span class="line">      &#x2F;&#x2F; 你可以自定义降级后的 UI 并渲染</span><br><span class="line">      return &lt;h1&gt;Something went wrong.&lt;&#x2F;h1&gt;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return this.props.children; </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后你就可以将错误边界组件作为一个常规组件去使用了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;ErrorBoundary&gt;</span><br><span class="line">  &lt;MyWidget &#x2F;&gt;</span><br><span class="line">&lt;&#x2F;ErrorBoundary&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;当MyWidget中出现错误时错误边界组件便会展示错误信息</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong></p>
+<ul>
+<li>错误边界仅在后代组件的渲染期间、生命周期方法和整个组件树的构造函数中捕获错误。错误边界无法捕获后代组件中的下述错误：事件处理函数中的错误、异步代码（例如 setTimeout 或 requestAnimationFrame 回调函数）中的错误、错误边界自身抛出来的错误（并非它的后代组件）</li>
+<li>错误边界应该放在哪儿？你可以将它放在最顶层以处理整个APP的错误（一旦某个组件出错则整个APP便崩溃），也可以单独包裹在各个可能出错的组件外以处理单个组件的错误（一旦某个组件出错则仅影响该组件而不会致使整个APP出错）</li>
+<li>在开发环境下，为了展示错误信息以方便排错，错误边界只会展示一小段时间，然后照常爆红报错。仅在生产环境下，错误边界才会完全起作用</li>
+</ul>
+<h3 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h3><p>懒加载意指在需要的时候才加载。React为我们提供了<code>React.lazy/Suspense</code>来实现组件的懒加载</p>
+<p><code>React.lazy()</code>允许你定义一个懒加载组件。这有助于缩减 bundle 的体积，并延迟加载在整个页面初次渲染时未用到的组件</p>
+<p><code>React.Suspense</code>组件可以指定加载指示器——即在请求延迟加载组件的这段时间内展现给用户的信息，通常是<code>Loading...</code>。他需要包裹住要延迟加载的组件</p>
+<p>使用方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Suspense &#125; from &#39;react&#39;;&#x2F;&#x2F;引入Suspense组件</span><br><span class="line"></span><br><span class="line">const OtherComponent &#x3D; React.lazy(() &#x3D;&gt; import(&#39;.&#x2F;OtherComponent&#39;));&#x2F;&#x2F;定义一个延迟加载组件OtherComponent</span><br><span class="line"></span><br><span class="line">function MyComponent() &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;Suspense fallback&#x3D;&#123;&lt;div&gt;Loading...&lt;&#x2F;div&gt;&#125;&gt;</span><br><span class="line">        &lt;OtherComponent &#x2F;&gt;</span><br><span class="line">      &lt;&#x2F;Suspense&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Suspense</code>组件的<code>fallback</code>属性接受一个，在请求延迟加载组件的这段时间内展现给用户的组件</p>
+<p>我们通常懒加载路由组件</p>
+<h3 id="PureComponent（组件优化）"><a href="#PureComponent（组件优化）" class="headerlink" title="PureComponent（组件优化）"></a>PureComponent（组件优化）</h3><p>在这之前，我们都是使用<code>Component</code>，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class Parent extends Component &#123;......&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但<code>Component</code>存在两个性能问题：</p>
+<ul>
+<li>只要调用<code>setState</code>，那么就会导致React重新渲染组件。这在大多数情况下是必要且正确的，但有时虽然我们调用了<code>setState</code>但数据没有任何变化，这时依旧会导致重新渲染（由于数据没变，故本来不用重新渲染），这便会引发性能问题</li>
+<li>父组件的重新渲染必然导致其中的子组件也被重新渲染。但有时子组件并没有用到父组件中的数据，或父组件传给子组件的props参数并没有改变。因此这时子组件本来不用重新渲染的。如下代码：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Parent extends Component &#123;</span><br><span class="line">	state &#x3D; &#123;......&#125;	</span><br><span class="line">	updateState()&#123;</span><br><span class="line">		this.setState(......);</span><br><span class="line">	&#125;</span><br><span class="line">	render() &#123;</span><br><span class="line">        return (</span><br><span class="line">            &lt;div&gt;</span><br><span class="line">				&lt;button onClick&#x3D;&#123;this.updateState&#125;&gt;更新state&lt;&#x2F;button&gt;</span><br><span class="line">                &lt;Child&#x2F;&gt;</span><br><span class="line">            &lt;&#x2F;div&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Child extends Component &#123;</span><br><span class="line">	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Child</code>组件没有用到<code>Parent</code>组件中的任何数据，因此在<code>Parent</code>重新渲染时是不用重新渲染<code>Child</code>的</p>
+<p>为了避免<code>Component</code>中存在的不必要的渲染问题。我们可采用<strong>11 生命周期</strong>一章中的<code>shouldComponentUpdate</code>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">class Parent extends Component &#123;</span><br><span class="line">	state &#x3D; &#123;......&#125;	</span><br><span class="line">	updateState()&#123;</span><br><span class="line">		this.setState(......);</span><br><span class="line">	&#125;</span><br><span class="line">	shouldComponentUpdate(nextProps, nextState)&#123;&#x2F;&#x2F;nextProps&#x2F;nextState分别表示新的props&#x2F;state</span><br><span class="line">		if(this.state. ...... &#x3D;&#x3D;&#x3D; nextState. ......)&#123;&#x2F;&#x2F;state数据是否发生了变化</span><br><span class="line">			return false;&#x2F;&#x2F;数据没发生变化则返回false，则按照生命周期中的图示可见就不会执行render方法重新渲染组件了</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	render() &#123;</span><br><span class="line">        return (</span><br><span class="line">            &lt;div&gt;</span><br><span class="line">				&lt;button onClick&#x3D;&#123;this.updateState&#125;&gt;更新state&lt;&#x2F;button&gt;</span><br><span class="line">                &lt;Child&#x2F;&gt;</span><br><span class="line">            &lt;&#x2F;div&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Child extends Component &#123;</span><br><span class="line">	shouldComponentUpdate(nextProps, nextState)&#123;</span><br><span class="line">		if(this.props. ...... &#x3D;&#x3D;&#x3D; nextProps. ......)&#123;&#x2F;&#x2F;props数据是否发生了变化</span><br><span class="line">			return false;&#x2F;&#x2F;数据没发生变化则返回false，则按照生命周期中的图示可见就不会执行render方法重新渲染组件了</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但React为我们提供了更便捷的方式——<code>PureComponent</code>。在<code>Component</code>中我们需要手动书写比较<code>props/state</code>的代码，但<code>PureComponent</code>已经封装好了<code>shouldComponentUpdate</code>——即已经在<code>shouldComponentUpdate</code>中为我们封装了比较<code>props/state</code>的操作。因此上述代码使用<code>PureComponent</code>后为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Parent extends PureComponent &#123;</span><br><span class="line">	state &#x3D; &#123;......&#125;	</span><br><span class="line">	updateState()&#123;</span><br><span class="line">		this.setState(......);</span><br><span class="line">	&#125;</span><br><span class="line">	render() &#123;</span><br><span class="line">        return (</span><br><span class="line">            &lt;div&gt;</span><br><span class="line">				&lt;button onClick&#x3D;&#123;this.updateState&#125;&gt;更新state&lt;&#x2F;button&gt;</span><br><span class="line">                &lt;Child&#x2F;&gt;</span><br><span class="line">            &lt;&#x2F;div&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Child extends PureComponent &#123;</span><br><span class="line">	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，在重新渲染父/子组件时，封装好的<code>shouldComponentUpdate</code>方法会为我们比较<code>props/state</code>数据是否变化，如果变化才会返回<code>true</code>进行渲染</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>Component</code>中的<code>shouldComponentUpdate</code>默认返回<code>true</code></li>
+<li><code>PureComponent</code>中的<code>shouldComponentUpdate</code>会先比较新的与旧的<code>props/state</code>对象本身，然后再比较它们中的各字段。只要<code>props/state</code>中有一个发生了变化就会返回<code>true</code>重新渲染</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/03/16%20React%E8%B7%AF%E7%94%B1/" rel="prev" title="16 React路由">
+      <i class="fa fa-chevron-left"></i> 16 React路由
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/03/18%20Hooks/" rel="next" title="18 Hooks">
+      18 Hooks <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#19-React%E5%85%B6%E4%BB%96"><span class="nav-number">1.</span> <span class="nav-text">19 React其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fragment"><span class="nav-number">1.0.1.</span> <span class="nav-text">Fragment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E8%BE%B9%E7%95%8C"><span class="nav-number">1.0.2.</span> <span class="nav-text">错误边界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%87%92%E5%8A%A0%E8%BD%BD"><span class="nav-number">1.0.3.</span> <span class="nav-text">懒加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PureComponent%EF%BC%88%E7%BB%84%E4%BB%B6%E4%BC%98%E5%8C%96%EF%BC%89"><span class="nav-number">1.0.4.</span> <span class="nav-text">PureComponent（组件优化）</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">181k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:44</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

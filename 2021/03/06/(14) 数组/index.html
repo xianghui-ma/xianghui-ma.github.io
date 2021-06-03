@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组 数组的创建JS中有两种创建数组的方法：  数组字面量  1var arr &#x3D; [1, 2, [3, 4], &quot;string&quot;];   Array构造函数  1var arr &#x3D; new Array(1, &quot;string&quot;);&#x2F;&#x2F;[a,&quot;strin">
+  <meta name="description" content="本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组 数组的创建JS中有三种创建数组的方法：  数组字面量  1var arr &#x3D; [1, 2, [3, 4], &quot;string&quot;];   Array构造函数  1var arr &#x3D; new Array(1, &quot;string&quot;);&#x2F;&#x2F;[a,&quot;strin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="(14)数组">
 <meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(14)%20%E6%95%B0%E7%BB%84/index.html">
 <meta property="og:site_name" content="Execute">
-<meta property="og:description" content="本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组 数组的创建JS中有两种创建数组的方法：  数组字面量  1var arr &#x3D; [1, 2, [3, 4], &quot;string&quot;];   Array构造函数  1var arr &#x3D; new Array(1, &quot;string&quot;);&#x2F;&#x2F;[a,&quot;strin">
+<meta property="og:description" content="本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组 数组的创建JS中有三种创建数组的方法：  数组字面量  1var arr &#x3D; [1, 2, [3, 4], &quot;string&quot;];   Array构造函数  1var arr &#x3D; new Array(1, &quot;string&quot;);&#x2F;&#x2F;[a,&quot;strin">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-06T06:23:29.692Z">
-<meta property="article:modified_time" content="2021-03-06T06:30:58.099Z">
+<meta property="article:modified_time" content="2021-04-07T07:06:40.193Z">
 <meta property="article:author" content="small_ma">
 <meta name="twitter:card" content="summary">
 
@@ -177,10 +177,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:30:58" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+              <time title="创建时间：2021-03-06 14:23:29" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-07 15:06:40" itemprop="dateModified" datetime="2021-04-07T15:06:40+08:00">2021-04-07</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -197,7 +203,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>9.4k</span>
+              <span>9.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -217,7 +223,7 @@
 
       
         <p>本节将讨论数组的创建，数组中的常用方法，数组的一些细节，类数组</p>
-<h1 id="数组的创建"><a href="#数组的创建" class="headerlink" title="数组的创建"></a>数组的创建</h1><p>JS中有两种创建数组的方法：</p>
+<h1 id="数组的创建"><a href="#数组的创建" class="headerlink" title="数组的创建"></a>数组的创建</h1><p>JS中有三种创建数组的方法：</p>
 <ul>
 <li>数组字面量</li>
 </ul>
@@ -231,6 +237,9 @@
 <blockquote>
 <p>当<code>Array</code>中只传一个参数时，该参数表示数组的长度</p>
 </blockquote>
+<ul>
+<li><code>Array.of()</code>创建数组，具体见“ES6分类 -&gt; (5) 数组的扩展 -&gt; <code>Array.of()</code>”</li>
+</ul>
 <span id="more"></span>
 
 <h1 id="数组与对象"><a href="#数组与对象" class="headerlink" title="数组与对象"></a>数组与对象</h1><p>数组就是<code>&#123;&#125;</code>对象的特殊形式，只不过：数组的属性名“碰巧”是整数；数组继承了<code>Array.prototype</code>中的一些方法；数组的实现经过了优化，故访问数组数据比访问<code>&#123;&#125;</code>对象的数据要快；数组还有其他的一些自身特性（下面会说到）</p>
@@ -335,6 +344,9 @@
 <p>其是按照冒泡排序从数组中取元素赋予<code>a</code>和<code>b</code>两个参数的：第一个元素和后面所有元素逐个比；然后第二个元素和后面所有元素比；……</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var obj1 &#x3D; &#123;</span><br><span class="line">    name : &#39;德洛丽丝&#39;,</span><br><span class="line">    age : 13,</span><br><span class="line">    sex : &#39;male&#39;</span><br><span class="line">&#125;</span><br><span class="line">var obj2 &#x3D; &#123;</span><br><span class="line">    name : &#39;伯纳德&#39;,</span><br><span class="line">    age : 7,</span><br><span class="line">    sex : &#39;female&#39;</span><br><span class="line">&#125;</span><br><span class="line">var obj3 &#x3D; &#123;</span><br><span class="line">    name : &#39;黑尔&#39;,</span><br><span class="line">    age : 15,</span><br><span class="line">    sex : &#39;male&#39;</span><br><span class="line">&#125;</span><br><span class="line">var arr &#x3D; [obj1, obj2, obj3];</span><br><span class="line">&#x2F;*要求按照元素的年龄大小进行排序*&#x2F;</span><br><span class="line">arr.sort(function(a, b)&#123;</span><br><span class="line">    return a.age - b.age;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
+<blockquote>
+<p>sort是稳定排序</p>
+</blockquote>
 <h2 id="不改变原数组"><a href="#不改变原数组" class="headerlink" title="不改变原数组"></a>不改变原数组</h2><ul>
 <li><code>concat</code></li>
 </ul>
@@ -533,14 +545,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -584,12 +596,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">103k</span>
+    <span title="站点总字数">181k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:34</span>
+    <span title="站点阅读时长">2:44</span>
 </div>
 
         
