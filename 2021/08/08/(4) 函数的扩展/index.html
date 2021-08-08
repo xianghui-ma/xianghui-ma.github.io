@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="(4) 函数的扩展函数参数的默认值ES6可以为函数参数指定默认值，指定方法是直接在参数后面赋值 1234567function log(x, y &#x3D; &#39;World&#39;) &amp;#123;  console.log(x, y);&amp;#125;log(&#39;Hello&#39;) &#x2F;&#x2F; Hello Worldlog(&#39;Hello&#39;, &#39;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(4) 函数的扩展">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/08/08/(4)%20%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="(4) 函数的扩展函数参数的默认值ES6可以为函数参数指定默认值，指定方法是直接在参数后面赋值 1234567function log(x, y &#x3D; &#39;World&#39;) &amp;#123;  console.log(x, y);&amp;#125;log(&#39;Hello&#39;) &#x2F;&#x2F; Hello Worldlog(&#39;Hello&#39;, &#39;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-08T07:07:20.046Z">
+<meta property="article:modified_time" content="2021-04-05T07:45:26.356Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/08/08/(4)%20%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(4) 函数的扩展 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/08/08/(4)%20%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (4) 函数的扩展
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-08 15:07:20" itemprop="dateCreated datePublished" datetime="2021-08-08T15:07:20+08:00">2021-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-05 15:45:26" itemprop="dateModified" datetime="2021-04-05T15:45:26+08:00">2021-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="4-函数的扩展"><a href="#4-函数的扩展" class="headerlink" title="(4) 函数的扩展"></a>(4) 函数的扩展</h1><h3 id="函数参数的默认值"><a href="#函数参数的默认值" class="headerlink" title="函数参数的默认值"></a>函数参数的默认值</h3><p>ES6可以为函数参数指定默认值，指定方法是直接在参数后面赋值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function log(x, y &#x3D; &#39;World&#39;) &#123;</span><br><span class="line">  console.log(x, y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">log(&#39;Hello&#39;) &#x2F;&#x2F; Hello World</span><br><span class="line">log(&#39;Hello&#39;, &#39;China&#39;) &#x2F;&#x2F; Hello China</span><br><span class="line">log(&#39;Hello&#39;, &#39;&#39;) &#x2F;&#x2F; Hello</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，每次调用函数时，函数参数的默认值都会被重新计算</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let x &#x3D; 99;</span><br><span class="line">function foo(p &#x3D; x + 1) &#123;</span><br><span class="line">  console.log(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo() &#x2F;&#x2F; 100</span><br><span class="line"></span><br><span class="line">x &#x3D; 100;</span><br><span class="line">foo() &#x2F;&#x2F; 101</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数参数默认值与解构赋值默认值结合使用"><a href="#函数参数默认值与解构赋值默认值结合使用" class="headerlink" title="函数参数默认值与解构赋值默认值结合使用"></a>函数参数默认值与解构赋值默认值结合使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function foo(&#123;x, y &#x3D; 5&#125;) &#123;</span><br><span class="line">  console.log(x, y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(&#123;&#125;) &#x2F;&#x2F; undefined 5</span><br><span class="line">foo(&#123;x: 1&#125;) &#x2F;&#x2F; 1 5</span><br><span class="line">foo(&#123;x: 1, y: 2&#125;) &#x2F;&#x2F; 1 2</span><br><span class="line">foo() &#x2F;&#x2F; TypeError: Cannot read property &#39;x&#39; of undefined</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中，最后一次调用foo函数会报错，因为未传入实参，所以此时函数参数的值为undefined，而对undefined解构必然出错</p>
+<p>这时，我们可为函数参数设置一个默认值用于解构赋值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function foo(&#123;x, y &#x3D; 5&#125; &#x3D; &#123;&#125;) &#123;&#x2F;&#x2F;默认值为&#123;&#125;</span><br><span class="line">  console.log(x, y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo() &#x2F;&#x2F; undefined 5</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中为函数参数设置了一个默认值<code>&#123;&#125;</code>。当未传入实参时便使用该默认值，然后对该默认值解构赋值</p>
+<p>下面再给出两个代码，以加强对此用法的理解</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function fetch(url, &#123; body &#x3D; &#39;&#39;, method &#x3D; &#39;GET&#39;, headers &#x3D; &#123;&#125; &#125; &#x3D; &#123;&#125;) &#123;</span><br><span class="line">  console.log(method);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fetch(&#39;http:&#x2F;&#x2F;example.com&#39;)</span><br><span class="line">&#x2F;&#x2F; &quot;GET&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 写法一</span><br><span class="line">function m1(&#123;x &#x3D; 0, y &#x3D; 0&#125; &#x3D; &#123;&#125;) &#123;</span><br><span class="line">  return [x, y];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 写法二</span><br><span class="line">function m2(&#123;x, y&#125; &#x3D; &#123; x: 0, y: 0 &#125;) &#123;</span><br><span class="line">  return [x, y];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 函数没有参数的情况</span><br><span class="line">m1() &#x2F;&#x2F; [0, 0]</span><br><span class="line">m2() &#x2F;&#x2F; [0, 0]</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; x 和 y 都有值的情况</span><br><span class="line">m1(&#123;x: 3, y: 8&#125;) &#x2F;&#x2F; [3, 8]</span><br><span class="line">m2(&#123;x: 3, y: 8&#125;) &#x2F;&#x2F; [3, 8]</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; x 有值，y 无值的情况</span><br><span class="line">m1(&#123;x: 3&#125;) &#x2F;&#x2F; [3, 0]</span><br><span class="line">m2(&#123;x: 3&#125;) &#x2F;&#x2F; [3, undefined]</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; x 和 y 都无值的情况</span><br><span class="line">m1(&#123;&#125;) &#x2F;&#x2F; [0, 0];</span><br><span class="line">m2(&#123;&#125;) &#x2F;&#x2F; [undefined, undefined]</span><br><span class="line"></span><br><span class="line">m1(&#123;z: 3&#125;) &#x2F;&#x2F; [0, 0]</span><br><span class="line">m2(&#123;z: 3&#125;) &#x2F;&#x2F; [undefined, undefined]</span><br></pre></td></tr></table></figure>
+
+<h3 id="rest参数"><a href="#rest参数" class="headerlink" title="rest参数"></a>rest参数</h3><p>ES6 引入 rest 参数（形式为<code>...变量名</code>），用于收集函数的多余参数，这样就不需要使用arguments对象了。rest 参数搭配的变量是一个数组（是真正的数组，不是类数组），该变量将多余的参数放入数组中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function add(...values) &#123;</span><br><span class="line">  let sum &#x3D; 0;</span><br><span class="line"></span><br><span class="line">  for (var val of values) &#123;</span><br><span class="line">    sum +&#x3D; val;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add(2, 5, 3) &#x2F;&#x2F; 10</span><br></pre></td></tr></table></figure>
+
+<p>注意，rest 参数之后不能再有其他参数（即只能是最后一个参数），否则会报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 报错</span><br><span class="line">function f(a, ...b, c) &#123;</span><br><span class="line">  &#x2F;&#x2F; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h3><h4 id="箭头函数的基本使用"><a href="#箭头函数的基本使用" class="headerlink" title="箭头函数的基本使用"></a>箭头函数的基本使用</h4><p>通过<code>(参数列表) =&gt; &#123;函数体&#125;</code>便可定义一个箭头函数。箭头函数由于没有函数名，所以在定义一个箭头函数时往往通过变量、对象属性等来接收该箭头函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let fn &#x3D; (name) &#x3D;&gt; &#123;</span><br><span class="line">    console.log(name);</span><br><span class="line">&#125;</span><br><span class="line">fn(&#39;西部世界&#39;);</span><br></pre></td></tr></table></figure>
+
+<p>如果箭头函数的函数体中只有一个<code>return</code>语句，那么可简写箭头函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var sum &#x3D; (num1, num2) &#x3D;&gt; num1 + num2;</span><br><span class="line">&#x2F;&#x2F; 等同于</span><br><span class="line">var sum &#x3D; function(num1, num2) &#123;</span><br><span class="line">  return num1 + num2;&#x2F;&#x2F;只有一个return语句</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>但是，如果返回的是一个对象，则必须在对象外面加上<code>()</code>，否则报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 报错</span><br><span class="line">let getTempItem &#x3D; id &#x3D;&gt; &#123; id: id, name: &quot;Temp&quot; &#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 不报错</span><br><span class="line">let getTempItem &#x3D; id &#x3D;&gt; (&#123; id: id, name: &quot;Temp&quot; &#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="箭头函数注意点"><a href="#箭头函数注意点" class="headerlink" title="箭头函数注意点"></a>箭头函数注意点</h4><p>1、箭头函数中的<code>this</code>指向</p>
+<p>箭头函数中的<code>this</code>指向在箭头函数定义时便已确定，之后便不会再变化</p>
+<p>确定箭头函数中的<code>this</code>指向应遵循如下原则：箭头函数中的<code>this</code>由箭头函数定义时外围最接近一层的非箭头函数的<code>this</code>决定。若外围没有非箭头函数，则<code>this</code>指向全局对象（再浏览器中为<code>window</code>）。<code>call/apply/bind</code>对箭头函数无效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">var data &#x3D; 11;</span><br><span class="line">var test1 &#x3D; () &#x3D;&gt; &#123;</span><br><span class="line">    console.log(this.data); &#x2F;&#x2F;this指向全局window</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var obj &#x3D; &#123;</span><br><span class="line">    data : 22,</span><br><span class="line">    test2 : () &#x3D;&gt; &#123;</span><br><span class="line">        console.log(this.data); &#x2F;&#x2F;&#x2F;&#x2F;this指向全局window</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function test3()&#123;</span><br><span class="line">    return () &#x3D;&gt; &#123;</span><br><span class="line">        console.log(this.data);&#x2F;&#x2F;33 this指向test3中的this</span><br><span class="line">        let fn &#x3D; () &#x3D;&gt; &#123;</span><br><span class="line">            console.log(this.data);&#x2F;&#x2F;33 this指向test3中的this</span><br><span class="line">        &#125;;</span><br><span class="line">        fn();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test1();&#x2F;&#x2F;11</span><br><span class="line">test1.call(&#123;data: 99&#125;);&#x2F;&#x2F;11</span><br><span class="line">obj.test2();&#x2F;&#x2F;11</span><br><span class="line">test3.call(&#123;data: 33&#125;)();</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>实际上，箭头函数中根本就没有<code>this</code></p>
+</blockquote>
+<p>2、箭头函数中没有<code>arguments</code>对象，如果要使用，可用rest参数代替</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let fn &#x3D; () &#x3D;&gt; &#123;</span><br><span class="line">    console.log(arguments);&#x2F;&#x2F;arguments is not defined</span><br><span class="line">&#125;</span><br><span class="line">fn();</span><br></pre></td></tr></table></figure>
+
+<p>虽然箭头函数中没有<code>arguments</code>对象，但是，可以在箭头函数中使用<code>function</code>关键字定义的函数的<code>arguments</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    return () &#x3D;&gt; &#123;</span><br><span class="line">        console.log(arguments);&#x2F;&#x2F;[1, 2, 3]，其就是test的arguments</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">test(1, 2, 3)();</span><br></pre></td></tr></table></figure>
+
+<p>所以在箭头函数中使用<code>arguments</code>的原则是：箭头函数中的<code>arguments</code>由箭头函数定义时外围最接近一层的非箭头函数的<code>arguments</code>决定。若外围没有非箭头函数，则报错（如上面第一个代码）</p>
+<p>3、箭头函数不能作构造函数，因此不能使用<code>new</code>调用箭头函数，否则报错</p>
+<p>4、不可以使用<code>yield</code>命令，因此箭头函数不能用作 Generator 函数</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(3)%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%96%B0%E5%A2%9E%E7%89%B9%E6%80%A7/" rel="prev" title="(3) 字符串新增特性">
+      <i class="fa fa-chevron-left"></i> (3) 字符串新增特性
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(5)%20%E6%95%B0%E7%BB%84%E7%9A%84%E6%89%A9%E5%B1%95/" rel="next" title="(5) 数组的扩展">
+      (5) 数组的扩展 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">(4) 函数的扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E7%9A%84%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="nav-number">1.0.1.</span> <span class="nav-text">函数参数的默认值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E4%B8%8E%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC%E9%BB%98%E8%AE%A4%E5%80%BC%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8"><span class="nav-number">1.0.2.</span> <span class="nav-text">函数参数默认值与解构赋值默认值结合使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rest%E5%8F%82%E6%95%B0"><span class="nav-number">1.0.3.</span> <span class="nav-text">rest参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0"><span class="nav-number">1.0.4.</span> <span class="nav-text">箭头函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.0.4.1.</span> <span class="nav-text">箭头函数的基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">1.0.4.2.</span> <span class="nav-text">箭头函数注意点</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">277k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:12</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

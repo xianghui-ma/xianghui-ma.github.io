@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="(10) Proxy(代理)与Reflect(反射)Proxy什么是ProxyProxy主要用于对象，用于修改对象操作(如读取&#x2F;添加&#x2F;删除对象属性)的默认行为。Proxy 可以理解成，在被代理对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写  Proxy属于“元编程”，即对编程语言进行编程。说得再通俗易懂写就是——修改语言原始定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(10) Proxy与Reflect">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/08/08/(10)%20Proxy%E4%B8%8EReflect/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="(10) Proxy(代理)与Reflect(反射)Proxy什么是ProxyProxy主要用于对象，用于修改对象操作(如读取&#x2F;添加&#x2F;删除对象属性)的默认行为。Proxy 可以理解成，在被代理对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写  Proxy属于“元编程”，即对编程语言进行编程。说得再通俗易懂写就是——修改语言原始定">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-08T07:07:20.057Z">
+<meta property="article:modified_time" content="2021-04-09T08:51:28.334Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/08/08/(10)%20Proxy%E4%B8%8EReflect/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(10) Proxy与Reflect | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/08/08/(10)%20Proxy%E4%B8%8EReflect/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (10) Proxy与Reflect
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-08 15:07:20" itemprop="dateCreated datePublished" datetime="2021-08-08T15:07:20+08:00">2021-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-09 16:51:28" itemprop="dateModified" datetime="2021-04-09T16:51:28+08:00">2021-04-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="10-Proxy-代理-与Reflect-反射"><a href="#10-Proxy-代理-与Reflect-反射" class="headerlink" title="(10) Proxy(代理)与Reflect(反射)"></a>(10) Proxy(代理)与Reflect(反射)</h1><h3 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h3><h4 id="什么是Proxy"><a href="#什么是Proxy" class="headerlink" title="什么是Proxy"></a>什么是Proxy</h4><p>Proxy主要用于对象，用于修改对象操作(如读取/添加/删除对象属性)的默认行为。Proxy 可以理解成，在被代理对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写</p>
+<blockquote>
+<p>Proxy属于“元编程”，即对编程语言进行编程。说得再通俗易懂写就是——修改语言原始定义的默认行为，以按照自己的意愿进行个性化设置</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var proxy &#x3D; new Proxy(&#123;&#125;, &#123;</span><br><span class="line">  get: function(target, propKey) &#123;</span><br><span class="line">    return 35;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">proxy.time &#x2F;&#x2F; 35</span><br><span class="line">proxy.name &#x2F;&#x2F; 35</span><br><span class="line">proxy.title &#x2F;&#x2F; 35</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中，为一个空对象设置了代理，并在代理中更改了获取属性操作(即<code>.</code>)的行为，所以后面获取属性值的操作都会被该代理拦截，从而按照你的设置返回<code>35</code></p>
+<h4 id="Proxy的使用"><a href="#Proxy的使用" class="headerlink" title="Proxy的使用"></a>Proxy的使用</h4><p>1、首先要创建代理对象</p>
+<p>ES6 原生提供 <code>Proxy</code> 构造函数，用来生成 Proxy 实例</p>
+<p><code>var proxy = new Proxy(target, handler);</code></p>
+<ul>
+<li><code>target</code>为被代理的对象</li>
+<li><code>handler</code>也是一个对象，用来定制拦截行为</li>
+</ul>
+<p>下面是<code>Proxy</code>支持的可以定制的拦截行为：</p>
+<ol>
+<li><code>get(target, propKey, receiver)</code>：拦截对象属性的读取，比如<code>proxy.foo</code>和<code>proxy[&#39;foo&#39;]</code></li>
+<li><code>set(target, propKey, value, receiver)</code>：拦截对象属性的设置，比如<code>proxy.foo = v</code>或<code>proxy[&#39;foo&#39;] = v</code></li>
+<li>其他行为可查阅资料，不再一一赘述</li>
+</ol>
+<p><code>get/set</code>方法的参数<code>target, propKey, receiver</code>分别表示<code>被代理的对象, 你所读取的属性名, 代理实例本身</code>。<code>set</code>的<code>value</code>参数表示<code>你设置的属性值</code></p>
+<p>2、使用 Proxy 实例操作对象</p>
+<p>Proxy 实例创建完毕后，应用Proxy实例操作对象，而不能还是由原对象操作自身，否则你定制的拦截行为不会生效</p>
+<p>下面给出一个完整的例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">let obj &#x3D; &#123;</span><br><span class="line">  name : &#39;黑尔&#39;</span><br><span class="line">&#125;;</span><br><span class="line">let proxy &#x3D; new Proxy(obj, &#123;</span><br><span class="line">  get(target, propKey, receiver)&#123;</span><br><span class="line">      console.log(&#39;正在获取属性值...&#39;);</span><br><span class="line">      return target[propKey];</span><br><span class="line">  &#125;,</span><br><span class="line">  set(target, propKey, value, receiver)&#123;</span><br><span class="line">    console.log(&#96;$&#123;propKey&#125;的值更新了...&#96;);</span><br><span class="line">    target[propKey] &#x3D; value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">proxy.name &#x3D; &#39;伯纳德&#39;;</span><br><span class="line">&#x2F;&#x2F;name的值更新了...</span><br><span class="line"></span><br><span class="line">console.log(proxy.name);</span><br><span class="line">&#x2F;&#x2F; 正在获取属性值...</span><br><span class="line">&#x2F;&#x2F; 伯纳德</span><br></pre></td></tr></table></figure>
+
+<p>在使用<code>Proxy</code>时需要注意：</p>
+<ol>
+<li><code>Proxy</code>的兼容性不好，有的环境并没实现。由于它不属于语法糖，而是实实在在的新增内容，所以不能通过babel转换为ES5</li>
+<li>严格模式下，<code>set</code>代理必须返回<code>true</code>，否则报错</li>
+<li>如果一个属性不可配置（configurable）且不可写（writable），则 Proxy 不能修改该属性，否则通过 Proxy 对象访问该属性会报错</li>
+</ol>
+<h4 id="可取消的-Proxy-实例"><a href="#可取消的-Proxy-实例" class="headerlink" title="可取消的 Proxy 实例"></a>可取消的 Proxy 实例</h4><p>ES6还提供了<code>Proxy.revocable()</code>方法，以返回一个可取消的 Proxy 实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let target &#x3D; &#123;&#125;;</span><br><span class="line">let handler &#x3D; &#123;&#125;;</span><br><span class="line"></span><br><span class="line">let &#123;proxy, revoke&#125; &#x3D; Proxy.revocable(target, handler);</span><br><span class="line"></span><br><span class="line">proxy.foo &#x3D; 123;</span><br><span class="line">proxy.foo &#x2F;&#x2F; 123</span><br><span class="line"></span><br><span class="line">revoke();</span><br><span class="line">proxy.foo &#x2F;&#x2F; TypeError: Revoked</span><br></pre></td></tr></table></figure>
+
+<p><code>Proxy.revocable()</code>方法返回一个对象，该对象的<code>proxy</code>属性是<code>Proxy</code>实例，<code>revoke</code>属性是一个函数，可以取消<code>Proxy</code>实例。上面代码中，当执行<code>revoke</code>函数之后，再访问<code>Proxy</code>实例，就会抛出一个错误</p>
+<h4 id="this指向"><a href="#this指向" class="headerlink" title="this指向"></a>this指向</h4><p>1、在 Proxy 代理的情况下，通过Proxy实例访问被代理对象的方法时，方法内部的<code>this</code>关键字会指向 Proxy 代理实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const target &#x3D; &#123;</span><br><span class="line">  m: function () &#123;</span><br><span class="line">    console.log(this &#x3D;&#x3D;&#x3D; proxy);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">const handler &#x3D; &#123;&#125;;</span><br><span class="line"></span><br><span class="line">const proxy &#x3D; new Proxy(target, handler);</span><br><span class="line"></span><br><span class="line">target.m() &#x2F;&#x2F; false</span><br><span class="line">proxy.m()  &#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+
+<p>2、Proxy 拦截函数内部的<code>this</code>，指向的是<code>handler</code>对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">const handler &#x3D; &#123;</span><br><span class="line">  get: function (target, key, receiver) &#123;</span><br><span class="line">    console.log(this &#x3D;&#x3D;&#x3D; handler);</span><br><span class="line">    return &#39;Hello, &#39; + key;</span><br><span class="line">  &#125;,</span><br><span class="line">  set: function (target, key, value) &#123;</span><br><span class="line">    console.log(this &#x3D;&#x3D;&#x3D; handler);</span><br><span class="line">    target[key] &#x3D; value;</span><br><span class="line">    return true;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const proxy &#x3D; new Proxy(&#123;&#125;, handler);</span><br><span class="line"></span><br><span class="line">proxy.foo</span><br><span class="line">&#x2F;&#x2F; true</span><br><span class="line">&#x2F;&#x2F; Hello, foo</span><br><span class="line"></span><br><span class="line">proxy.foo &#x3D; 1</span><br><span class="line">&#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+
+<h3 id="Reflect"><a href="#Reflect" class="headerlink" title="Reflect"></a>Reflect</h3><p><code>Reflect</code>对象的设计目的有这样几个</p>
+<ul>
+<li><code>Reflect</code>对象所提供的大部分方法与<code>Object</code>中的同名方法作用相同。因此你可以将<code>Reflect</code>中的方法等同于<code>Object</code>中的方法，以后便可以用<code>Reflect</code>中的方法来替换<code>Object</code>中的同名方法（这也是规范所期望的）。同时，<code>Reflect</code>中的方法规范了<code>Object</code>中同名方法的行为</li>
+<li>与<code>Proxy</code>配合使用。由于<code>Reflect</code>中的方法的行为就是语言所定义的默认行为，所以如果<code>Proxy</code>的拦截函数中需要用默认行为操作对象时，便可使用<code>Reflect</code>中的方法</li>
+</ul>
+<p>对于<code>Reflect</code>对象的设计目的更为详细的叙述建议参见**<a target="_blank" rel="noopener" href="https://es6.ruanyifeng.com/#docs/reflect#%E6%A6%82%E8%BF%B0">Reflect概述</a>**</p>
+<p>我们对上面“2、使用 Proxy 实例操作对象”中的代码用<code>Reflect</code>进行优化，这样更合理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">let obj &#x3D; &#123;</span><br><span class="line">  name : &#39;黑尔&#39;</span><br><span class="line">&#125;;</span><br><span class="line">let proxy &#x3D; new Proxy(obj, &#123;</span><br><span class="line">  get(target, propKey, receiver)&#123;</span><br><span class="line">      console.log(&#39;正在获取属性值...&#39;);</span><br><span class="line">      return Reflect.get(target, propKey, receiver);&#x2F;&#x2F;使用Reflect执行对对象的默认操作</span><br><span class="line">  &#125;,</span><br><span class="line">  set(target, propKey, value, receiver)&#123;</span><br><span class="line">    console.log(&#96;$&#123;propKey&#125;的值更新了...&#96;);</span><br><span class="line">    Reflect.set(target, propKey, value, receiver);&#x2F;&#x2F;使用Reflect执行对对象的默认操作</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">proxy.name &#x3D; &#39;伯纳德&#39;;</span><br><span class="line">&#x2F;&#x2F;name的值更新了...</span><br><span class="line"></span><br><span class="line">console.log(proxy.name);</span><br><span class="line">&#x2F;&#x2F; 正在获取属性值...</span><br><span class="line">&#x2F;&#x2F; 伯纳德</span><br></pre></td></tr></table></figure>
+
+<p>对Reflect中的方法不在此作一一阐述，使用时可查阅**<a target="_blank" rel="noopener" href="https://es6.ruanyifeng.com/#docs/reflect#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95">Reflect静态方法</a>**</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(9)%20Set%E5%92%8CMap%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="prev" title="(9) Set和Map数据结构">
+      <i class="fa fa-chevron-left"></i> (9) Set和Map数据结构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(11)%20Promise/" rel="next" title="(11) Promise">
+      (11) Promise <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#10-Proxy-%E4%BB%A3%E7%90%86-%E4%B8%8EReflect-%E5%8F%8D%E5%B0%84"><span class="nav-number">1.</span> <span class="nav-text">(10) Proxy(代理)与Reflect(反射)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Proxy"><span class="nav-number">1.0.1.</span> <span class="nav-text">Proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFProxy"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">什么是Proxy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Proxy%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.0.1.2.</span> <span class="nav-text">Proxy的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E5%8F%96%E6%B6%88%E7%9A%84-Proxy-%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.0.1.3.</span> <span class="nav-text">可取消的 Proxy 实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#this%E6%8C%87%E5%90%91"><span class="nav-number">1.0.1.4.</span> <span class="nav-text">this指向</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reflect"><span class="nav-number">1.0.2.</span> <span class="nav-text">Reflect</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">277k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:12</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

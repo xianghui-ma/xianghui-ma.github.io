@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="(2) 字符串新增特性字符串的遍历器接口ES6为字符串新增了遍历器接口，因此我们可以使用for...of...来遍历字符串，同时也可以用数组形式的解构赋值来解构字符串 1234let str &#x3D; &quot;西部 世界&quot;for(let c of str)&amp;#123;  console.log(c);&amp;#125;  123let str &#x3D; &quot;西部世界&amp;quo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(3) 字符串新增特性">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/08/08/(3)%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%96%B0%E5%A2%9E%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="(2) 字符串新增特性字符串的遍历器接口ES6为字符串新增了遍历器接口，因此我们可以使用for...of...来遍历字符串，同时也可以用数组形式的解构赋值来解构字符串 1234let str &#x3D; &quot;西部 世界&quot;for(let c of str)&amp;#123;  console.log(c);&amp;#125;  123let str &#x3D; &quot;西部世界&amp;quo">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-08T07:07:20.043Z">
+<meta property="article:modified_time" content="2021-04-05T01:31:23.315Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/08/08/(3)%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%96%B0%E5%A2%9E%E7%89%B9%E6%80%A7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(3) 字符串新增特性 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/08/08/(3)%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%96%B0%E5%A2%9E%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (3) 字符串新增特性
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-08 15:07:20" itemprop="dateCreated datePublished" datetime="2021-08-08T15:07:20+08:00">2021-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-05 09:31:23" itemprop="dateModified" datetime="2021-04-05T09:31:23+08:00">2021-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="2-字符串新增特性"><a href="#2-字符串新增特性" class="headerlink" title="(2) 字符串新增特性"></a>(2) 字符串新增特性</h1><h3 id="字符串的遍历器接口"><a href="#字符串的遍历器接口" class="headerlink" title="字符串的遍历器接口"></a>字符串的遍历器接口</h3><p>ES6为字符串新增了遍历器接口，因此我们可以使用<code>for...of...</code>来遍历字符串，同时也可以用数组形式的解构赋值来解构字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let str &#x3D; &quot;西部 世界&quot;</span><br><span class="line">for(let c of str)&#123;</span><br><span class="line">  console.log(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let str &#x3D; &quot;西部世界&quot;</span><br><span class="line">let [a, b] &#x3D; str;</span><br><span class="line">console.log(a, b);&#x2F;&#x2F;西 部</span><br></pre></td></tr></table></figure>
+
+<h3 id="模板字符串"><a href="#模板字符串" class="headerlink" title="模板字符串"></a>模板字符串</h3><p>使用一对‘`’便能定义一个模板字符串。模板字符串有如下特性</p>
+<p>1、模板字符串可以当作普通字符串使用，也可以用来定义多行字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let str1 &#x3D; &#96;西部世界&#96;;&#x2F;&#x2F;作普通字符串使用</span><br><span class="line"></span><br><span class="line">let str2 &#x3D; &#96;西部世界</span><br><span class="line">            德洛丽丝&#96;;&#x2F;&#x2F;多行字符串</span><br><span class="line"></span><br><span class="line">console.log(str1, str2);</span><br></pre></td></tr></table></figure>
+
+<p>2、可在模板字符串中嵌入变量，使用JS表达式或调用函数等（这些都通过<code>$&#123;&#125;</code>实现）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">let x &#x3D; 1;</span><br><span class="line">let y &#x3D; 2;</span><br><span class="line"></span><br><span class="line">&#96;$&#123;x&#125; + $&#123;y&#125; &#x3D; $&#123;x + y&#125;&#96;</span><br><span class="line">&#x2F;&#x2F; &quot;1 + 2 &#x3D; 3&quot;</span><br><span class="line"></span><br><span class="line">&#96;$&#123;x&#125; + $&#123;y * 2&#125; &#x3D; $&#123;x + y * 2&#125;&#96;</span><br><span class="line">&#x2F;&#x2F; &quot;1 + 4 &#x3D; 5&quot;</span><br><span class="line"></span><br><span class="line">let obj &#x3D; &#123;x: 1, y: 2&#125;;</span><br><span class="line">&#96;$&#123;obj.x + obj.y&#125;&#96;</span><br><span class="line">&#x2F;&#x2F; &quot;3&quot;</span><br><span class="line"></span><br><span class="line">function fn() &#123;</span><br><span class="line">  return &quot;Hello World&quot;;</span><br><span class="line">&#125;</span><br><span class="line">&#96;foo $&#123;fn()&#125; bar&#96;</span><br><span class="line">&#x2F;&#x2F; foo Hello World bar</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果<code>$&#123;&#125;</code>中的值不是字符串，将按照一般的规则转为字符串。如果大括号内部就是一个字符串，将会原样输出</p>
+</blockquote>
+<h3 id="字符串的新增方法"><a href="#字符串的新增方法" class="headerlink" title="字符串的新增方法"></a>字符串的新增方法</h3><p>1、<code>includes(), startsWith(), endsWith()</code></p>
+<ul>
+<li><code>includes()</code>：返回布尔值，表示是否找到了参数字符串</li>
+<li><code>startsWith()</code>：返回布尔值，表示参数字符串是否在原字符串的头部</li>
+<li><code>endsWith()</code>：返回布尔值，表示参数字符串是否在原字符串的尾部</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let s &#x3D; &#39;Hello world!&#39;;</span><br><span class="line"></span><br><span class="line">s.startsWith(&#39;Hello&#39;) &#x2F;&#x2F; true</span><br><span class="line">s.endsWith(&#39;!&#39;) &#x2F;&#x2F; true</span><br><span class="line">s.includes(&#39;o&#39;) &#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+
+<p>这三个方法都支持第二个参数，表示开始搜索的位置(从0开始)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let s &#x3D; &#39;Hello world!&#39;;</span><br><span class="line"></span><br><span class="line">s.startsWith(&#39;world&#39;, 6) &#x2F;&#x2F; true</span><br><span class="line">s.endsWith(&#39;Hello&#39;, 5) &#x2F;&#x2F; true</span><br><span class="line">s.includes(&#39;Hello&#39;, 6) &#x2F;&#x2F; false</span><br></pre></td></tr></table></figure>
+
+<p>需要特别注意的是：<code>endsWith</code>使用第二个参数n时，表示前（左边）n个字符是否以参数字符串结尾</p>
+<p>2、<code>repeat()</code></p>
+<p><code>repeat</code>方法返回一个新字符串，表示将原字符串重复n次</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#39;x&#39;.repeat(3) &#x2F;&#x2F; &quot;xxx&quot;</span><br><span class="line">&#39;hello&#39;.repeat(2) &#x2F;&#x2F; &quot;hellohello&quot;</span><br><span class="line">&#39;na&#39;.repeat(0) &#x2F;&#x2F; &quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>(1)、<code>repeat</code>的参数是负数或者<code>Infinity</code>，会报错。 (2)、参数<code>NaN</code>等同于 0。 (3)、如果<code>repeat</code>的参数是字符串，则会先转换成数字</p>
+</blockquote>
+<p>3、<code>padStart()，padEnd()</code></p>
+<p>上述方法用于补全字符串长度，返回一个新字符串。如果某个字符串不够指定长度，会在头部或尾部补全。<code>padStart()</code>用于头部补全，<code>padEnd()</code>用于尾部补全</p>
+<p><code>padStart()</code>和<code>padEnd()</code>一共接受两个参数，第一个参数是字符串补全生效的最大长度，第二个参数是用来补全的字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#39;x&#39;.padStart(5, &#39;ab&#39;) &#x2F;&#x2F; &#39;ababx&#39;</span><br><span class="line">&#39;x&#39;.padStart(4, &#39;ab&#39;) &#x2F;&#x2F; &#39;abax&#39;</span><br><span class="line"></span><br><span class="line">&#39;x&#39;.padEnd(5, &#39;ab&#39;) &#x2F;&#x2F; &#39;xabab&#39;</span><br><span class="line">&#39;x&#39;.padEnd(4, &#39;ab&#39;) &#x2F;&#x2F; &#39;xaba&#39;</span><br></pre></td></tr></table></figure>
+
+<p>该方法具有如下注意点：</p>
+<ul>
+<li>如果原字符串的长度，等于或大于最大长度，则字符串补全不生效，返回原字符串</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#39;xxx&#39;.padStart(2, &#39;ab&#39;) &#x2F;&#x2F; &#39;xxx&#39;</span><br><span class="line">&#39;xxx&#39;.padEnd(2, &#39;ab&#39;) &#x2F;&#x2F; &#39;xxx&#39;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果用来补全的字符串与原字符串，两者的长度之和超过了最大长度，则会截去超出位数的补全字符串</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#39;abc&#39;.padStart(10, &#39;0123456789&#39;)</span><br><span class="line">&#x2F;&#x2F; &#39;0123456abc&#39;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果省略第二个参数，默认使用空格补全长度</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#39;x&#39;.padStart(4) &#x2F;&#x2F; &#39;   x&#39;</span><br><span class="line">&#39;x&#39;.padEnd(4) &#x2F;&#x2F; &#39;x   &#39;</span><br></pre></td></tr></table></figure>
+
+<p>4、<code>trimStart()，trimEnd()</code></p>
+<p><code>trimStart()</code>消除字符串头部的空格，<code>trimEnd()</code>消除尾部的空格。它们返回的都是新字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const s &#x3D; &#39;  abc  &#39;;</span><br><span class="line"></span><br><span class="line">s.trim() &#x2F;&#x2F; &quot;abc&quot;</span><br><span class="line">s.trimStart() &#x2F;&#x2F; &quot;abc  &quot;</span><br><span class="line">s.trimEnd() &#x2F;&#x2F; &quot;  abc&quot;</span><br></pre></td></tr></table></figure>
+
+<p>除了空格键，这两个方法对字符串头部（或尾部）的 tab 键、换行符等不可见的空白符号也有效</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(2)%20%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC/" rel="prev" title="(2) 解构赋值">
+      <i class="fa fa-chevron-left"></i> (2) 解构赋值
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(4)%20%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95/" rel="next" title="(4) 函数的扩展">
+      (4) 函数的扩展 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%96%B0%E5%A2%9E%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">(2) 字符串新增特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E9%81%8D%E5%8E%86%E5%99%A8%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.0.1.</span> <span class="nav-text">字符串的遍历器接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.0.2.</span> <span class="nav-text">模板字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%96%B0%E5%A2%9E%E6%96%B9%E6%B3%95"><span class="nav-number">1.0.3.</span> <span class="nav-text">字符串的新增方法</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">277k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:12</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="(7) 迭代器Iterator迭代器的基本概念和原理在详述迭代器前，我们先明晰为什么要有迭代器？什么是迭代器？ 迭代器就是一个用于遍历数据类型的接口（即Symbol.iterator）。ES6规定，遍历器接口部署在数据结构的Symbol.iterator属性上。即一种数据结构只要部署了Symbol.iterator，我们就称这种数据结构是“可遍历的”（iterable）,即能通过for...of.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(7) 迭代器Iterator">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/08/08/(7)%20%E8%BF%AD%E4%BB%A3%E5%99%A8Iterator/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="(7) 迭代器Iterator迭代器的基本概念和原理在详述迭代器前，我们先明晰为什么要有迭代器？什么是迭代器？ 迭代器就是一个用于遍历数据类型的接口（即Symbol.iterator）。ES6规定，遍历器接口部署在数据结构的Symbol.iterator属性上。即一种数据结构只要部署了Symbol.iterator，我们就称这种数据结构是“可遍历的”（iterable）,即能通过for...of.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-08T07:07:20.052Z">
+<meta property="article:modified_time" content="2021-04-07T05:56:11.237Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/08/08/(7)%20%E8%BF%AD%E4%BB%A3%E5%99%A8Iterator/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(7) 迭代器Iterator | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/08/08/(7)%20%E8%BF%AD%E4%BB%A3%E5%99%A8Iterator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (7) 迭代器Iterator
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-08 15:07:20" itemprop="dateCreated datePublished" datetime="2021-08-08T15:07:20+08:00">2021-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-07 13:56:11" itemprop="dateModified" datetime="2021-04-07T13:56:11+08:00">2021-04-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="7-迭代器Iterator"><a href="#7-迭代器Iterator" class="headerlink" title="(7) 迭代器Iterator"></a>(7) 迭代器Iterator</h1><h3 id="迭代器的基本概念和原理"><a href="#迭代器的基本概念和原理" class="headerlink" title="迭代器的基本概念和原理"></a>迭代器的基本概念和原理</h3><p>在详述迭代器前，我们先明晰为什么要有迭代器？什么是迭代器？</p>
+<p>迭代器就是一个用于遍历数据类型的接口（即<code>Symbol.iterator</code>）。ES6规定，遍历器接口部署在数据结构的<code>Symbol.iterator</code>属性上。即一种数据结构只要部署了<code>Symbol.iterator</code>，我们就称这种数据结构是“可遍历的”（iterable）,即能通过<code>for...of...</code>遍历</p>
+<p>只要拥有<code>Symbol.iterator</code>接口的数据类型都能通过<code>for...of...</code>遍历。因此迭代器的作用就是为各种不同的数据类型（如数组、Map、Set等）提供统一的遍历方法（即<code>for...of...</code>）</p>
+<p>迭代器的工作原理如下：</p>
+<ol>
+<li><code>Symbol.iterator</code>对应的方法应返回一个遍历器对象，且该对象中必须有<code>next</code>方法</li>
+<li>每一趟<code>for...of...</code>循环便会自动调用一次被遍历数据结构的<code>next</code>方法，<code>next</code>方法返回一个拥有<code>value</code>和<code>done</code>两个属性的对象。<code>value</code>表示本次遍历出的元素；<code>done</code>是一个布尔值，表示遍历是否结束</li>
+</ol>
+<p>下面我们为对象实现一个<code>Symbol.iterator</code>接口，以帮助理解上述内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">let obj &#x3D; &#123;</span><br><span class="line">  names : [&#39;德洛丽丝&#39;, &#39;伯纳德&#39;, &#39;黑尔&#39;, &#39;梅芙&#39;],</span><br><span class="line">  [Symbol.iterator] : function()&#123;&#x2F;&#x2F;该遍历器用于遍历对象中的names数组</span><br><span class="line">    let index &#x3D; -1;</span><br><span class="line">    let _this &#x3D; this;</span><br><span class="line">    return &#123;</span><br><span class="line">      next : function()&#123;</span><br><span class="line">        index++;</span><br><span class="line">        return &#123;</span><br><span class="line">          value : _this.names[index],</span><br><span class="line">          done : index &#x3D;&#x3D;&#x3D; _this.names.length</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">for(let name of obj)&#123;</span><br><span class="line">  console.log(name);</span><br><span class="line">  &#x2F;&#x2F; 德洛丽丝</span><br><span class="line">  &#x2F;&#x2F; 伯纳德</span><br><span class="line">  &#x2F;&#x2F; 黑尔  </span><br><span class="line">  &#x2F;&#x2F; 梅芙</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="原生迭代器接口"><a href="#原生迭代器接口" class="headerlink" title="原生迭代器接口"></a>原生迭代器接口</h3><p>当使用<code>for...of...</code>遍历时，<code>for...of...</code>会自动调用迭代器接口</p>
+<p>JS中的某些数据结构原生具有迭代器接口(如下)，因此可以直接使用<code>for...of...</code>遍历</p>
+<ul>
+<li>Array</li>
+<li>Map</li>
+<li>Set</li>
+<li>String</li>
+<li>TypedArray</li>
+<li>函数的 arguments 对象</li>
+<li>NodeList 对象</li>
+</ul>
+<p>下面的例子展示了数组中的原生迭代器接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let arr &#x3D; [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;];</span><br><span class="line">let iter &#x3D; arr[Symbol.iterator]();</span><br><span class="line"></span><br><span class="line">console.log(iter);&#x2F;&#x2F;&#123;next: ƒ next()&#125;</span><br><span class="line">console.log(iter.next());&#x2F;&#x2F;&#123; value: &#39;a&#39;, done: false &#125;</span><br><span class="line">console.log(iter.next());&#x2F;&#x2F;&#123; value: &#39;b&#39;, done: false &#125;</span><br><span class="line">console.log(iter.next());&#x2F;&#x2F;&#123; value: &#39;c&#39;, done: false &#125;</span><br><span class="line">console.log(iter.next());&#x2F;&#x2F;&#123; value: undefined, done: true &#125;</span><br></pre></td></tr></table></figure>
+
+<p>但有的数据结构没有原生迭代器接口（如<code>&#123;&#125;</code>对象），因此不能直接使用<code>for...of...</code>遍历他们，需要手动实现迭代器接口后才能使用<code>for...of...</code>遍历（如上面的例子）</p>
+<h3 id="默认调用迭代器接口的场合"><a href="#默认调用迭代器接口的场合" class="headerlink" title="默认调用迭代器接口的场合"></a>默认调用迭代器接口的场合</h3><p>下面介绍几种常见的会自动默认调用迭代器接口的场合</p>
+<p>1、<code>for...of...</code>循环（见上述内容）</p>
+<p>2、扩展运算符<code>...</code>作展开功能时</p>
+<p>以上述第一小节中的代码为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">console.log([...obj]);</span><br><span class="line">&#x2F;&#x2F;[ &#39;德洛丽丝&#39;, &#39;伯纳德&#39;, &#39;黑尔&#39;, &#39;梅芙&#39; ]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>所有拥有迭代器接口的数据结构都可以用<code>...</code>展开</p>
+</blockquote>
+<p>3、对数组和Set结构进行解构赋值时</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let set &#x3D; new Set().add(&#39;a&#39;).add(&#39;b&#39;).add(&#39;c&#39;);</span><br><span class="line"></span><br><span class="line">let [x,y] &#x3D; set;</span><br><span class="line">&#x2F;&#x2F; x&#x3D;&#39;a&#39;; y&#x3D;&#39;b&#39;</span><br><span class="line"></span><br><span class="line">let [first, ...rest] &#x3D; set;</span><br><span class="line">&#x2F;&#x2F; first&#x3D;&#39;a&#39;; rest&#x3D;[&#39;b&#39;,&#39;c&#39;];</span><br></pre></td></tr></table></figure>
+
+<p>4、<code>Array.from()</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(6)%20Symbol/" rel="prev" title="(6) Symbol">
+      <i class="fa fa-chevron-left"></i> (6) Symbol
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(8)%20%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%89%A9%E5%B1%95/" rel="next" title="(8) 对象的扩展">
+      (8) 对象的扩展 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E8%BF%AD%E4%BB%A3%E5%99%A8Iterator"><span class="nav-number">1.</span> <span class="nav-text">(7) 迭代器Iterator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86"><span class="nav-number">1.0.1.</span> <span class="nav-text">迭代器的基本概念和原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.0.2.</span> <span class="nav-text">原生迭代器接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E8%B0%83%E7%94%A8%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%9C%BA%E5%90%88"><span class="nav-number">1.0.3.</span> <span class="nav-text">默认调用迭代器接口的场合</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">277k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:12</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

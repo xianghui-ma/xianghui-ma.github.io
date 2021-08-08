@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="(15) generator生成器generator的基本使用我们可通过function*来定义一个generator函数。调用 generator 函数，返回一个遍历器对象。以后，每次调用遍历器对象的next方法，就会返回一个有着value和done两个属性的对象。value属性表示当前的内部状态的值，是yield表达式后面那个表达式的值；done属性是一个布尔值，表示是否遍历结束 遍历器对象中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(15) generator生成器">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/08/08/(15)%20generator%E7%94%9F%E6%88%90%E5%99%A8/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="(15) generator生成器generator的基本使用我们可通过function*来定义一个generator函数。调用 generator 函数，返回一个遍历器对象。以后，每次调用遍历器对象的next方法，就会返回一个有着value和done两个属性的对象。value属性表示当前的内部状态的值，是yield表达式后面那个表达式的值；done属性是一个布尔值，表示是否遍历结束 遍历器对象中">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-08T07:07:20.068Z">
+<meta property="article:modified_time" content="2021-04-20T02:58:55.468Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/08/08/(15)%20generator%E7%94%9F%E6%88%90%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(15) generator生成器 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/08/08/(15)%20generator%E7%94%9F%E6%88%90%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (15) generator生成器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-08 15:07:20" itemprop="dateCreated datePublished" datetime="2021-08-08T15:07:20+08:00">2021-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-20 10:58:55" itemprop="dateModified" datetime="2021-04-20T10:58:55+08:00">2021-04-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="15-generator生成器"><a href="#15-generator生成器" class="headerlink" title="(15) generator生成器"></a>(15) generator生成器</h1><h3 id="generator的基本使用"><a href="#generator的基本使用" class="headerlink" title="generator的基本使用"></a>generator的基本使用</h3><p>我们可通过<code>function*</code>来定义一个<code>generator</code>函数。调用 <code>generator</code> 函数，返回一个遍历器对象。以后，每次调用遍历器对象的<code>next</code>方法，就会返回一个有着<code>value</code>和<code>done</code>两个属性的对象。<code>value</code>属性表示当前的内部状态的值，是<code>yield</code>表达式后面那个表达式的值；<code>done</code>属性是一个布尔值，表示是否遍历结束</p>
+<p>遍历器对象中的<code>next</code>方法运行逻辑如下：</p>
+<ol>
+<li>遇到<code>yield</code>表达式，就暂停执行后面的操作，并将紧跟在<code>yield</code>后面的那个表达式的值，作为返回的对象的<code>value</code>属性值</li>
+<li>下一次调用<code>next</code>方法时，再继续往下执行，直到遇到下一个<code>yield</code>表达式</li>
+<li>如果没有再遇到新的<code>yield</code>表达式，就一直运行到函数结束，直到<code>return</code>语句为止，并将<code>return</code>语句后面的表达式的值，作为返回的对象的<code>value</code>属性值</li>
+<li>如果该函数没有<code>return</code>语句，则返回的对象的<code>value</code>属性值为<code>undefined</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function* test()&#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  yield 2;</span><br><span class="line">  yield 3;</span><br><span class="line">  return 4;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let gen &#x3D; test();</span><br><span class="line">console.log(gen.next());</span><br><span class="line">console.log(gen.next());</span><br><span class="line">console.log(gen.next());</span><br><span class="line">console.log(gen.next());</span><br><span class="line">console.log(gen.next());</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; &#123; value: 1, done: false &#125;</span><br><span class="line">&#x2F;&#x2F; &#123; value: 2, done: false &#125;       </span><br><span class="line">&#x2F;&#x2F; &#123; value: 3, done: false &#125;       </span><br><span class="line">&#x2F;&#x2F; &#123; value: 4, done: true &#125;        </span><br><span class="line">&#x2F;&#x2F; &#123; value: undefined, done: true &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>next</code>方法可以带一个参数，该参数就会被当作上一个<code>yield</code>表达式的返回值。由于<code>next</code>方法的参数表示上一个<code>yield</code>表达式的返回值，所以在第一次使用<code>next</code>方法时，传递参数是无效的。V8 引擎直接忽略第一次使用<code>next</code>方法时的参数，只有从第二次使用<code>next</code>方法开始，参数才是有效的。从语义上讲，第一个<code>next</code>方法用来启动遍历器对象，所以不用带有参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function* test()&#123;</span><br><span class="line">  let v1 &#x3D; yield 1;&#x2F;&#x2F;22作为yield表达式——“yield 1”——的返回值，赋给v1</span><br><span class="line">  console.log(v1);&#x2F;&#x2F;22</span><br><span class="line">  let v2 &#x3D; yield 2;&#x2F;&#x2F;33作为yield表达式——“yield 2”——的返回值，赋给v2</span><br><span class="line">  console.log(v2);&#x2F;&#x2F;33</span><br><span class="line">  let v3 &#x3D; yield 3;&#x2F;&#x2F;44作为yield表达式——“yield 3”——的返回值，赋给v3</span><br><span class="line">  console.log(v3);&#x2F;&#x2F;44</span><br><span class="line">  return 4;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let gen &#x3D; test();</span><br><span class="line">console.log(gen.next(11));</span><br><span class="line">console.log(gen.next(22));</span><br><span class="line">console.log(gen.next(33));</span><br><span class="line">console.log(gen.next(44));</span><br><span class="line">console.log(gen.next(55));</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; &#123; value: 1, done: false &#125;</span><br><span class="line">&#x2F;&#x2F;22</span><br><span class="line">&#x2F;&#x2F; &#123; value: 2, done: false &#125;  </span><br><span class="line">&#x2F;&#x2F;33     </span><br><span class="line">&#x2F;&#x2F; &#123; value: 3, done: false &#125; </span><br><span class="line">&#x2F;&#x2F;44      </span><br><span class="line">&#x2F;&#x2F; &#123; value: 4, done: true &#125;        </span><br><span class="line">&#x2F;&#x2F; &#123; value: undefined, done: true &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="for…of…遍历"><a href="#for…of…遍历" class="headerlink" title="for…of…遍历"></a>for…of…遍历</h3><p><code>for...of</code>循环可以自动遍历 <code>generator</code> 函数调用时生成的遍历器对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function* test()&#123;</span><br><span class="line">  let v1 &#x3D; yield 1;</span><br><span class="line">  let v2 &#x3D; yield 2;</span><br><span class="line">  let v3 &#x3D; yield 3;</span><br><span class="line">  return 4;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let gen &#x3D; test();</span><br><span class="line"></span><br><span class="line">for(let k of gen)&#123;</span><br><span class="line">  console.log(k);</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;1</span><br><span class="line">&#x2F;&#x2F;2</span><br><span class="line">&#x2F;&#x2F;3</span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意，一旦<code>next</code>方法的返回对象的<code>done</code>属性为<code>true</code>，<code>for...of</code>循环就会中止，且不包含该返回对象，所以上面代码的<code>return</code>语句返回的4，不包括在<code>for...of</code>循环之中</p>
+<h3 id="遍历器对象中的三个方法"><a href="#遍历器对象中的三个方法" class="headerlink" title="遍历器对象中的三个方法"></a>遍历器对象中的三个方法</h3><h4 id="Generator-prototype-throw"><a href="#Generator-prototype-throw" class="headerlink" title="Generator.prototype.throw()"></a>Generator.prototype.throw()</h4><p>该方法用于在<code>generator</code>函数体外抛出错误，然后在<code>generator</code>函数体内捕获错误</p>
+<p>上面我们说过，可以通过带参数的<code>next</code>方法为<code>generator</code>函数内部传入参数，以作为<code>yield</code>表达式的返回值。这儿的<code>throw</code>方法实际上可以理解为<code>.next(new Error(...))</code>，即通过<code>next</code>向<code>generator</code>函数内部传入了一个错误，以作为<code>yield</code>表达式的返回值</p>
+<p>同时，我们也可以为<code>throw</code>设置参数，该参数即为错误信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function* test()&#123;</span><br><span class="line">  try&#123;</span><br><span class="line">    let v1 &#x3D; yield 1;&#x2F;&#x2F;调用throw后，该行抛出错误</span><br><span class="line">	let v2 &#x3D; yield 2;</span><br><span class="line">  &#125;catch(e)&#123;</span><br><span class="line">    console.log(e);&#x2F;&#x2F;出错了</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">let gen &#x3D; test();</span><br><span class="line">console.log(gen.next());&#x2F;&#x2F;&#123; value: 1, done: false &#125;</span><br><span class="line">gen.throw(&#39;出错了&#39;);&#x2F;&#x2F;相当于gen.next(new Error(&#39;出错了&#39;));</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>throw</code>抛出错误后，应该在<code>generator</code>函数体内的相应<code>yield</code>语句处用<code>try...catch...</code>捕获错误；如果没在<code>generator</code>函数中捕获错误，那么抛出的错误就会掉到调用<code>throw</code>方法处，你应该在该处捕获错误；如果在<code>generator</code>函数中和<code>throw</code>处都未捕获错误，那么整个脚本将终止执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function* test()&#123;</span><br><span class="line">  let v1 &#x3D; yield 1;</span><br><span class="line">&#125;</span><br><span class="line">let gen &#x3D; test();</span><br><span class="line">console.log(gen.next());&#x2F;&#x2F;&#123; value: 1, done: false &#125;</span><br><span class="line">try&#123;</span><br><span class="line">  gen.throw(&#39;出错了&#39;);&#x2F;&#x2F;相当于gen.next(new Error(&#39;出错了&#39;));</span><br><span class="line">&#125;catch(e)&#123;</span><br><span class="line">  console.log(e);&#x2F;&#x2F;出错了</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是：</p>
+<p>1、<code>throw</code>方法抛出的错误要被内部捕获，前提是必须至少执行过一次<code>next</code>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function* gen() &#123;</span><br><span class="line">  try &#123;</span><br><span class="line">    yield 1;</span><br><span class="line">  &#125; catch (e) &#123;</span><br><span class="line">    console.log(&#39;内部捕获&#39;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var g &#x3D; gen();</span><br><span class="line">g.throw(1);</span><br><span class="line">&#x2F;&#x2F; Uncaught 1</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，<code>g.throw(1)</code>执行时，<code>next</code>方法一次都没有执行过。这时，抛出的错误不会被内部捕获，而是直接在外部抛出，导致程序出错。这种行为其实很好理解，因为第一次执行<code>next</code>方法，等同于启动执行 <code>generator</code> 函数的内部代码，否则 <code>generator</code> 函数还没有开始执行，这时<code>throw</code>方法抛错只可能抛出在函数外部</p>
+<p>2、<code>throw</code>方法被捕获以后，会附带执行下一条<code>yield</code>表达式。也就是说，会附带执行一次<code>next</code>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var gen &#x3D; function* gen()&#123;</span><br><span class="line">  try &#123;</span><br><span class="line">    yield console.log(&#39;a&#39;);</span><br><span class="line">  &#125; catch (e) &#123;</span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">  &#125;</span><br><span class="line">  yield console.log(&#39;b&#39;);</span><br><span class="line">  yield console.log(&#39;c&#39;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var g &#x3D; gen();</span><br><span class="line">g.next() &#x2F;&#x2F; a</span><br><span class="line">g.throw() &#x2F;&#x2F; b</span><br><span class="line">g.next() &#x2F;&#x2F; c</span><br></pre></td></tr></table></figure>
+
+<p>3、<code>generator</code> 函数体内抛出的错误，也可以被函数体外的<code>catch</code>捕获</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function* foo() &#123;</span><br><span class="line">  var x &#x3D; yield 3;</span><br><span class="line">  var y &#x3D; x.toUpperCase();</span><br><span class="line">  yield y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var it &#x3D; foo();</span><br><span class="line"></span><br><span class="line">it.next(); &#x2F;&#x2F; &#123; value:3, done:false &#125;</span><br><span class="line"></span><br><span class="line">try &#123;</span><br><span class="line">  it.next(42);</span><br><span class="line">&#125; catch (err) &#123;</span><br><span class="line">  console.log(err);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，第二个<code>next</code>方法向函数体内传入一个参数 <code>42</code>，数值是没有<code>toUpperCase</code>方法的，所以会抛出一个 <code>TypeError</code> 错误，被函数体外的<code>catch</code>捕获</p>
+<p>一旦 <code>generator</code> 执行过程中抛出错误，且没有被内部捕获，就不会再执行下去了。如果此后还调用<code>next</code>方法，将返回一个<code>value</code>属性等于<code>undefined</code>、<code>done</code>属性等于<code>true</code>的对象，即 <code>JavaScript</code> 引擎认为这个 <code>generator</code> 已经运行结束了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">function* g() &#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  console.log(&#39;throwing an exception&#39;);</span><br><span class="line">  throw new Error(&#39;generator broke!&#39;);</span><br><span class="line">  yield 2;</span><br><span class="line">  yield 3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function log(generator) &#123;</span><br><span class="line">  var v;</span><br><span class="line">  console.log(&#39;starting generator&#39;);</span><br><span class="line">  try &#123;</span><br><span class="line">    v &#x3D; generator.next();</span><br><span class="line">    console.log(&#39;第一次运行next方法&#39;, v);</span><br><span class="line">  &#125; catch (err) &#123;</span><br><span class="line">    console.log(&#39;捕捉错误&#39;, v);</span><br><span class="line">  &#125;</span><br><span class="line">  try &#123;</span><br><span class="line">    v &#x3D; generator.next();</span><br><span class="line">    console.log(&#39;第二次运行next方法&#39;, v);</span><br><span class="line">  &#125; catch (err) &#123;</span><br><span class="line">    console.log(&#39;捕捉错误&#39;, v);</span><br><span class="line">  &#125;</span><br><span class="line">  try &#123;</span><br><span class="line">    v &#x3D; generator.next();</span><br><span class="line">    console.log(&#39;第三次运行next方法&#39;, v);</span><br><span class="line">  &#125; catch (err) &#123;</span><br><span class="line">    console.log(&#39;捕捉错误&#39;, v);</span><br><span class="line">  &#125;</span><br><span class="line">  console.log(&#39;caller done&#39;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">log(g());</span><br><span class="line">&#x2F;&#x2F; starting generator</span><br><span class="line">&#x2F;&#x2F; 第一次运行next方法 &#123; value: 1, done: false &#125;</span><br><span class="line">&#x2F;&#x2F; throwing an exception</span><br><span class="line">&#x2F;&#x2F; 捕捉错误 &#123; value: 1, done: false &#125;</span><br><span class="line">&#x2F;&#x2F; 第三次运行next方法 &#123; value: undefined, done: true &#125;</span><br><span class="line">&#x2F;&#x2F; caller done</span><br></pre></td></tr></table></figure>
+
+<h4 id="Generator-prototype-return"><a href="#Generator-prototype-return" class="headerlink" title="Generator.prototype.return()"></a>Generator.prototype.return()</h4><p><code>generator</code> 函数返回的遍历器对象，还有一个<code>return()</code>方法，可以返回给定的值，并且终结遍历 <code>generator</code> 函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function* gen() &#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  yield 2;</span><br><span class="line">  yield 3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var g &#x3D; gen();</span><br><span class="line"></span><br><span class="line">g.next()        &#x2F;&#x2F; &#123; value: 1, done: false &#125;</span><br><span class="line">g.return(&#39;foo&#39;) &#x2F;&#x2F; &#123; value: &quot;foo&quot;, done: true &#125;</span><br><span class="line">g.next()        &#x2F;&#x2F; &#123; value: undefined, done: true &#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，遍历器对象<code>g</code>调用<code>return()</code>方法后，返回值的<code>value</code>属性就是<code>return()</code>方法的参数<code>foo</code>。并且，<code>generator</code> 函数的遍历就终止了，返回值的<code>done</code>属性为<code>true</code>，以后再调用<code>next()</code>方法，<code>done</code>属性总是返回<code>true</code></p>
+<p>如果<code>return()</code>方法调用时，不提供参数，则返回值的<code>value</code>属性为<code>undefined</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function* gen() &#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  yield 2;</span><br><span class="line">  yield 3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var g &#x3D; gen();</span><br><span class="line"></span><br><span class="line">g.next()        &#x2F;&#x2F; &#123; value: 1, done: false &#125;</span><br><span class="line">g.return() &#x2F;&#x2F; &#123; value: undefined, done: true &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>generator</code> 函数内部有<code>try...finally</code>代码块，且正在执行<code>try</code>代码块，那么<code>return()</code>方法会导致立刻进入<code>finally</code>代码块，执行完以后，整个函数才会结束</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function* numbers () &#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  try &#123;</span><br><span class="line">    yield 2;</span><br><span class="line">    yield 3;</span><br><span class="line">  &#125; finally &#123;</span><br><span class="line">    yield 4;</span><br><span class="line">    yield 5;</span><br><span class="line">  &#125;</span><br><span class="line">  yield 6;</span><br><span class="line">&#125;</span><br><span class="line">var g &#x3D; numbers();</span><br><span class="line">g.next() &#x2F;&#x2F; &#123; value: 1, done: false &#125;</span><br><span class="line">g.next() &#x2F;&#x2F; &#123; value: 2, done: false &#125;</span><br><span class="line">g.return(7) &#x2F;&#x2F; &#123; value: 4, done: false &#125;</span><br><span class="line">g.next() &#x2F;&#x2F; &#123; value: 5, done: false &#125;</span><br><span class="line">g.next() &#x2F;&#x2F; &#123; value: 7, done: true &#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，调用<code>return()</code>方法后，就开始执行<code>finally</code>代码块，不执行<code>try</code>里面剩下的代码了，然后等到<code>finally</code>代码块执行完，再返回<code>return()</code>方法指定的返回值</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/08/(14)%20async%E4%B8%8Eawait/" rel="prev" title="(14) async与await">
+      <i class="fa fa-chevron-left"></i> (14) async与await
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#15-generator%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">(15) generator生成器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#generator%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.0.1.</span> <span class="nav-text">generator的基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for%E2%80%A6of%E2%80%A6%E9%81%8D%E5%8E%86"><span class="nav-number">1.0.2.</span> <span class="nav-text">for…of…遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E5%99%A8%E5%AF%B9%E8%B1%A1%E4%B8%AD%E7%9A%84%E4%B8%89%E4%B8%AA%E6%96%B9%E6%B3%95"><span class="nav-number">1.0.3.</span> <span class="nav-text">遍历器对象中的三个方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Generator-prototype-throw"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">Generator.prototype.throw()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Generator-prototype-return"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">Generator.prototype.return()</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">277k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:12</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
