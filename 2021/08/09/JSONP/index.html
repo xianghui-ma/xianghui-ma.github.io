@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="函数的两种定义方式 函数声明  类似于如下代码便为函数声明 123function test()&amp;#123;	&#x2F;&#x2F;函数体&amp;#125;  函数表达式  函数表达式有匿名函数表达式与命名函数表达式两种。如下：">
+  <meta name="description" content="jsonp(JSON with padding——又称填充式JSON或参数式JSON)。是使用JSON的一种新方法——用来跨域。 jsonp原理我们知道——凡是带有src属性的html标签，他们都能跨域访问资源，比如：img、script、iframe等。 jsonp也正是利用了这个特点，通过动态创建script标签，并设置其src属性来实现跨域访问资源的 jsonp由两部分组成：回调函数与服务器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="(05)函数初识">
-<meta property="og:url" content="https://xianghui-ma.github.io/2021/03/06/(05)%20%E5%87%BD%E6%95%B0%E5%88%9D%E8%AF%86/index.html">
+<meta property="og:title" content="JSONP">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/08/09/JSONP/index.html">
 <meta property="og:site_name" content="Execute">
-<meta property="og:description" content="函数的两种定义方式 函数声明  类似于如下代码便为函数声明 123function test()&amp;#123;	&#x2F;&#x2F;函数体&amp;#125;  函数表达式  函数表达式有匿名函数表达式与命名函数表达式两种。如下：">
+<meta property="og:description" content="jsonp(JSON with padding——又称填充式JSON或参数式JSON)。是使用JSON的一种新方法——用来跨域。 jsonp原理我们知道——凡是带有src属性的html标签，他们都能跨域访问资源，比如：img、script、iframe等。 jsonp也正是利用了这个特点，通过动态创建script标签，并设置其src属性来实现跨域访问资源的 jsonp由两部分组成：回调函数与服务器">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-03-06T06:23:29.678Z">
-<meta property="article:modified_time" content="2021-03-06T06:40:20.955Z">
+<meta property="article:published_time" content="2021-08-09T02:55:24.574Z">
+<meta property="article:modified_time" content="2021-08-09T02:55:46.928Z">
 <meta property="article:author" content="small_ma">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://xianghui-ma.github.io/2021/03/06/(05)%20%E5%87%BD%E6%95%B0%E5%88%9D%E8%AF%86/">
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/08/09/JSONP/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>(05)函数初识 | Execute</title>
+  <title>JSONP | Execute</title>
   
 
 
@@ -155,7 +155,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/03/06/(05)%20%E5%87%BD%E6%95%B0%E5%88%9D%E8%AF%86/">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/08/09/JSONP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/img/header.png">
@@ -168,7 +168,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          (05)函数初识
+          JSONP
         </h1>
 
         <div class="post-meta">
@@ -179,7 +179,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-03-06 14:23:29 / 修改时间：14:40:20" itemprop="dateCreated datePublished" datetime="2021-03-06T14:23:29+08:00">2021-03-06</time>
+              <time title="创建时间：2021-08-09 10:55:24 / 修改时间：10:55:46" itemprop="dateCreated datePublished" datetime="2021-08-09T10:55:24+08:00">2021-08-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -187,7 +187,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">浏览器</span></a>
                 </span>
             </span>
 
@@ -197,14 +197,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2k</span>
+              <span>2.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -216,47 +216,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="函数的两种定义方式"><a href="#函数的两种定义方式" class="headerlink" title="函数的两种定义方式"></a>函数的两种定义方式</h1><ul>
-<li>函数声明</li>
-</ul>
-<p>类似于如下代码便为函数声明</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">	&#x2F;&#x2F;函数体</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>函数表达式</li>
-</ul>
-<p>函数表达式有匿名函数表达式与命名函数表达式两种。如下：</p>
-<span id="more"></span>
+        <p>jsonp(JSON with padding——又称填充式JSON或参数式JSON)。是使用JSON的一种新方法——用来跨域。</p>
+<h1 id="jsonp原理"><a href="#jsonp原理" class="headerlink" title="jsonp原理"></a>jsonp原理</h1><p>我们知道——凡是带有src属性的html标签，他们都能跨域访问资源，比如：img、script、iframe等。</p>
+<p>jsonp也正是利用了这个特点，通过动态创建script标签，并设置其src属性来实现跨域访问资源的</p>
+<p>jsonp由两部分组成：回调函数与服务器端返回的数据。其中，回调函数名可在请求url中通过相应的查询参数(如cb、callback、jsonp)自定义（究竟采用什么查询参数指定回调函数名还需要由服务器端决定，服务器端通过哪个查询参数来获取回调函数名那么就采用那个回调函数）。然后服务器返回数据时会将数据作为参数放入你指定的函数名中，以函数调用的方式返回数据——如：<br><code>handleResponse(json形式的数据)</code>。该函数调用被放入创建的script标签中，然后执行调用页面中的handleResponse函数，对数据进行处理</p>
+<p><strong>jsonp需要前后端配合才行，并不是所有资源链接都能使用jsonp获取到，只有后端对jsonp也做了支持，那么通过jsonp才能获取到数据。当然，如果资源链接中能指定回调函数名，那么一般都能使用jsonp，如下面的例子</strong></p>
+<p><strong>另外需要注意的地方是：对于<code>&lt;script&gt;</code>元素而言，服务器返回的json编码数据会被自动解码执行。因此，虽然服务器返回的是json形式的回调，但浏览器会自动解码执行函数调用</strong></p>
+<p><strong>只有将创建的script元素插入页面时才会触发HTTP请求</strong></p>
+<p>我们来看一个跨域访问的url的形式(做了简化，来源于百度搜索框联想)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">script.src &#x3D; &#39;https:&#x2F;&#x2F;sp0.baidu.com&#x2F;5a1Fazu8AA54nxGko9WTAnF6hhy&#x2F;su?wd&#x3D;西部世界&#39;&amp;cb&#x3D;handleResponse&#39;</span><br></pre></td></tr></table></figure>
+<p>其中<code>cb=handleResponse</code>就是我们指定的回调函数名（wd=为你输入的关键字）</p>
+<p>下面我们写一个简单的jsonp跨域请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var script &#x3D; document.createElement(&#39;script&#39;);</span><br><span class="line">script.src &#x3D; &#39;https:&#x2F;&#x2F;sp0.baidu.com&#x2F;5a1Fazu8AA54nxGko9WTAnF6hhy&#x2F;su?wd&#x3D;西部世界&#39;&amp;cb&#x3D;handleResponse&#39;;</span><br><span class="line">document.body.appendChild(script);</span><br><span class="line"></span><br><span class="line">function handleResponse(data)&#123;</span><br><span class="line">	console.log(data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var test &#x3D; function()&#123;&#x2F;&#x2F;匿名函数表达式</span><br><span class="line">	&#x2F;&#x2F;函数体</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var test &#x3D; function fun()&#123;&#x2F;&#x2F;命名函数表达式</span><br><span class="line">	&#x2F;&#x2F;函数体</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>响应回来的内容是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">handleResponse(&#123;q:&quot;西部世界&quot;,p:false,s:[&quot;西部世界第二季&quot;,&quot;西部世界第一季&quot;,&quot;西部世界第二季下载&quot;,&quot;西部世界2&quot;,&quot;西部世界第二季百度云&quot;,&quot;西部世界第一季下载&quot;,&quot;西部世界第一季百度云&quot;,&quot;西部世界下载&quot;,&quot;西部世界未删减版&quot;,&quot;西部世界百度云&quot;]&#125;);</span><br></pre></td></tr></table></figure>
 
-<p>匿名函数表达式常用</p>
+<p>可见——是一个函数调用的形式</p>
+<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><p>我们简单的模仿一个百度搜索框的词语联想功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type&#x3D;&quot;text&quot; id&#x3D;&quot;word&quot;&#x2F;&gt;</span><br><span class="line">&lt;ul id&#x3D;&quot;list&quot;&gt;&lt;&#x2F;ul&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var input &#x3D; document.getElementById(&#39;word&#39;);</span><br><span class="line">    input.timer &#x3D; null;</span><br><span class="line">    var list &#x3D; document.getElementById(&#39;list&#39;);</span><br><span class="line">    var script &#x3D; null;</span><br><span class="line">    input.addEventListener(&#39;input&#39;, handle, false);</span><br><span class="line"></span><br><span class="line">    function handle(e)&#123;</span><br><span class="line">        clearTimeout(input.timer);</span><br><span class="line">        input.timer &#x3D; setTimeout(function()&#123;</span><br><span class="line">            script &amp;&amp; script.remove();</span><br><span class="line">            script &#x3D; document.createElement(&#39;script&#39;);</span><br><span class="line">            script.src &#x3D; &#39;https:&#x2F;&#x2F;sp0.baidu.com&#x2F;5a1Fazu8AA54nxGko9WTAnF6hhy&#x2F;su?wd&#x3D;&#39; + input.value + &#39;&amp;cb&#x3D;&#39; + &#39;handleResponse&#39;;</span><br><span class="line">            document.body.appendChild(script);</span><br><span class="line">        &#125;, 300);</span><br><span class="line">    &#125;</span><br><span class="line">    function handleResponse(data)&#123;</span><br><span class="line">        var arr &#x3D; [];</span><br><span class="line">        console.log(data.s);</span><br><span class="line">        data.s.forEach(function(item)&#123;</span><br><span class="line">            arr.push(&#39;&lt;li&gt;&lt;a href&#x3D;&quot;https:&#x2F;&#x2F;www.baidu.com&#x2F;s?ie&#x3D;utf-8&amp;f&#x3D;8&amp;rsv_bp&#x3D;0&amp;rsv_idx&#x3D;1&amp;tn&#x3D;baidu&amp;wd&#x3D;&#39; + item + &#39;&quot;&gt;&#39; + item + &#39;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;&#39;);</span><br><span class="line">        &#125;);</span><br><span class="line">        list.innerHTML &#x3D; arr.join(&#39;&#39;);</span><br><span class="line">        list.style.display &#x3D; data.s.length !&#x3D;&#x3D; 0 ? &#39;block&#39; : &#39;none&#39;;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
 <blockquote>
-<ol>
-<li>匿名函数的<code>test.name</code>为<code>test</code>；而命名函数的<code>test.name</code>为<code>fun</code></li>
-<li>命名函数时，打印<code>fun</code>将报错<code>Uncaught ReferenceError: fun is not defined</code>。此时<br>命名函数的<code>test</code>才指向函数。所以命名函数的<code>fun</code>并没太大作用，故匿名函数表达式更常用</li>
-</ol>
-</blockquote>
-<h1 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h1><p>同其他语言一样，JS函数也可以使用参数。但是JS函数的参数具有如下特性：</p>
-<ul>
-<li>实参数量任意。即<code>实参个数 &gt; 形参个数</code>或<code>实参个数 &lt; 形参个数</code>均可</li>
-<li>实参的数据类型任意</li>
-<li>没传递实参的形参将自动被赋予<code>undefined</code>值</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function test(par1, par2, par3)&#123;</span><br><span class="line">    console.log(par1, par2, par3);</span><br><span class="line">&#125;</span><br><span class="line">test(100, &quot;字符串类型&quot;);&#x2F;&#x2F;100 &quot;字符串类型&quot; undefined</span><br><span class="line">test(100, &quot;字符串类型&quot;, [], true);&#x2F;&#x2F;100 &quot;字符串类型&quot; []</span><br></pre></td></tr></table></figure>
-
-<p>为什么会有上述特性呢？原因是JS中的函数参数在内部是用一个名为<code>arguments</code>的形参数组来表示的。<code>arguments</code>对象的长度是由传入的实参个数决定的，不是由定义函数时的形参个数决定的，这就导致了实参数量的任意性；在JS中，一个数组的元素可以是任意类型，因此就导致了实参的数据类型任意。</p>
-<p>我们可在函数体内通过<code>arguments</code>对象来访问这个形参数组，从而获取传递给函数的每一个实参；同时也可使用它的<code>length</code>属性获知有多少个实参传递给了函数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    console.log(&quot;传入的实参个数：&quot; + arguments.length);</span><br><span class="line">    for(var i &#x3D; 0; i &lt; arguments.length; i++)&#123;</span><br><span class="line">        console.log(&quot;第&quot; + (i + 1) + &quot;个实参为：&quot; + arguments[i]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">test(100, &quot;字符串类型&quot;, 200, true);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;传入的实参个数：4</span><br><span class="line">&#x2F;&#x2F;test.html:14 第1个参数为：100</span><br><span class="line">&#x2F;&#x2F;test.html:14 第2个参数为：字符串类型</span><br><span class="line">&#x2F;&#x2F;test.html:14 第3个参数为：200</span><br><span class="line">&#x2F;&#x2F;test.html:14 第4个参数为：true</span><br></pre></td></tr></table></figure>
-
-<p>需要注意的是，形参数组的值永远与对应形参的值保持同步</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function test(par1)&#123;</span><br><span class="line">    console.log(par1 + &quot;---&quot; + arguments[0]);&#x2F;&#x2F;100---100</span><br><span class="line">    arguments[0] &#x3D; true;</span><br><span class="line">    console.log(par1 + &quot;---&quot; + arguments[0]);&#x2F;&#x2F;true---true</span><br><span class="line">    par1 &#x3D; 200;</span><br><span class="line">    console.log(par1 + &quot;---&quot; + arguments[0]);&#x2F;&#x2F;200---200</span><br><span class="line">&#125;</span><br><span class="line">test(100);</span><br></pre></td></tr></table></figure>
-
-<p>由上述代码可见，形参与它对应的<code>arguments</code>元素同时变化。但<code>arguments</code>中的<code>arguments[超出长度范围的索引]</code>这些元素的变化不会影响形参，因为这些元素没有对应的形参</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function test(par1)&#123;</span><br><span class="line">    console.log(par1 + &quot;---&quot; + arguments[0]);&#x2F;&#x2F;100---100</span><br><span class="line">    arguments[1] &#x3D; 200;</span><br><span class="line">    console.log(par1 + &quot;---&quot; + arguments[0]);&#x2F;&#x2F;100---100</span><br><span class="line">&#125;</span><br><span class="line">test(100);</span><br></pre></td></tr></table></figure>
-
-<p>虽然形参数组元素与对应形参相互影响。但是，它们并不共享同一内存空间，它们的内存空间是独立的，只是它们的值会同步而已</p>
-<blockquote>
-<p><code>arguments</code>实际上是一个类数组</p>
+<p>注意：ajax与jsonp的区别在于——ajax是通过xhr对象来访问数据的，且ajax受同源策略的限制。而jsonp是通过动态创建script标签来访问数据，可以跨域</p>
 </blockquote>
 
     </div>
@@ -273,13 +254,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/03/06/(04)%20%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="prev" title="(04)类型转换">
-      <i class="fa fa-chevron-left"></i> (04)类型转换
+    <a href="/2021/08/09/%E5%AE%89%E5%85%A8/" rel="prev" title="安全">
+      <i class="fa fa-chevron-left"></i> 安全
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/03/06/(06)%20%E9%A2%84%E7%BC%96%E8%AF%91/" rel="next" title="(06)预编译">
-      (06)预编译 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -338,7 +316,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">函数的两种定义方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">函数参数</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#jsonp%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">jsonp原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">应用</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
