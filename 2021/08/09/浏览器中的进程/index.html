@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xianghui-ma.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本章先总结一下进程和线程的关系、然后讨论以前的单进程浏览器的缺陷、最后叙述现代Chrome浏览器的多进程架构 进程和线程的关系 进程中的任意一个线程执行出错，都会导致整个进程的崩溃 同一进程中的线程共享该进程中的数据 当一个进程关闭之后，操作系统会回收进程所占用的内存 各个进程之间相互隔离。因此一个进程崩溃不会影响其他进程  单进程浏览器早期的&lt;&#x3D;IE6浏览器就是单进程浏览器 单进程浏览器是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1、浏览器中的进程">
+<meta property="og:url" content="https://xianghui-ma.github.io/2021/08/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Execute">
+<meta property="og:description" content="本章先总结一下进程和线程的关系、然后讨论以前的单进程浏览器的缺陷、最后叙述现代Chrome浏览器的多进程架构 进程和线程的关系 进程中的任意一个线程执行出错，都会导致整个进程的崩溃 同一进程中的线程共享该进程中的数据 当一个进程关闭之后，操作系统会回收进程所占用的内存 各个进程之间相互隔离。因此一个进程崩溃不会影响其他进程  单进程浏览器早期的&lt;&#x3D;IE6浏览器就是单进程浏览器 单进程浏览器是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-09T00:59:24.381Z">
+<meta property="article:modified_time" content="2021-07-23T02:25:46.585Z">
+<meta property="article:author" content="small_ma">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xianghui-ma.github.io/2021/08/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>1、浏览器中的进程 | Execute</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Execute</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xianghui-ma.github.io/2021/08/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/header.png">
+      <meta itemprop="name" content="small_ma">
+      <meta itemprop="description" content="慢慢来，比较快！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Execute">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          1、浏览器中的进程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-09 08:59:24" itemprop="dateCreated datePublished" datetime="2021-08-09T08:59:24+08:00">2021-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-23 10:25:46" itemprop="dateModified" datetime="2021-07-23T10:25:46+08:00">2021-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">浏览器</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本章先总结一下进程和线程的关系、然后讨论以前的单进程浏览器的缺陷、最后叙述现代Chrome浏览器的多进程架构</p>
+<h1 id="进程和线程的关系"><a href="#进程和线程的关系" class="headerlink" title="进程和线程的关系"></a>进程和线程的关系</h1><ul>
+<li>进程中的任意一个线程执行出错，都会导致整个进程的崩溃</li>
+<li>同一进程中的线程共享该进程中的数据</li>
+<li>当一个进程关闭之后，操作系统会回收进程所占用的内存</li>
+<li>各个进程之间相互隔离。因此一个进程崩溃不会影响其他进程</li>
+</ul>
+<h1 id="单进程浏览器"><a href="#单进程浏览器" class="headerlink" title="单进程浏览器"></a>单进程浏览器</h1><p>早期的<code>&lt;=IE6</code>浏览器就是单进程浏览器</p>
+<p>单进程浏览器是指：整个浏览器只有一个进程，它的所有功能模块（如网络、插件、渲染引擎等）都是以线程的方式运行于一个进程中。如下图：</p>
+<p>![p1]</p>
+<p>如此多的功能模块运行于一个进程之中会导致如下问题：</p>
+<ul>
+<li>浏览器不稳定</li>
+</ul>
+<p>因为前面说到“进程中的任意一个线程执行出错，都会导致整个进程的崩溃”，因此如果这些以线程方式运行的功能模块中的某个出错势必会导致整个浏览器进程的崩溃。如早期浏览器中的视频播放需要插件支持，而插件十分容易出问题</p>
+<ul>
+<li>浏览器卡顿</li>
+</ul>
+<p>由上图可知，所有页面的页面渲染、JS执行和插件都是运行在页面线程中的。而一个线程同一时刻只能干一件事情，那么如果某个页面中的JS中有一个死循环的话就会导致其他页面的渲染、JS执行和插件不能执行，从而导致其他页面和整个浏览器无响应</p>
+<ul>
+<li>不安全</li>
+</ul>
+<p>虽然我们可以为进程建立安全沙箱（你可以把沙箱看作是操作系统给进程上了一把锁，沙箱中的程序不能操作系统中的数据），但是单进程浏览器只有一个进程，而有时我们譬如要上传文件，这就意味着我们不能给这个进程建立沙箱。如此一来，脚本或插件等就有可能操作系统数据</p>
+<h1 id="多进程浏览器"><a href="#多进程浏览器" class="headerlink" title="多进程浏览器"></a>多进程浏览器</h1><p>因为单进程浏览器的上述问题，便出现了多进程架构的浏览器。以Chrome的多进程架构为例</p>
+<p>![p2]</p>
+<p>上图是Chrome的多进程架构。从图中可以看出其包括一个浏览器主进程、一个GPU进程、一个网络进程、多个渲染进程、多个插件进程（还有其他很多进程，这儿仅阐述这五个主要的进程）。下面分别讨论上述进程</p>
+<ul>
+<li><strong>浏览器进程</strong> 主要负责界面显示（见“第5章”）、用户交互、子进程管理、同时提供存储等功能</li>
+<li><strong>渲染进程</strong> 核心任务是将HTML、CSS和JS转换为用户可以与之交互的网页。排版引擎Blink和JS引擎V8都是运行在该进程中。Chrome会为每个Tab标签创建一个渲染进程。出于安全考虑（JS脚本威胁），渲染引擎运行于沙箱中</li>
+<li><strong>GPU进程</strong> GPU的初衷是为了实现3D CSS效果，后来网页也选用GPU绘制（见“第5章”），这使得GPU成为浏览器普遍的需求</li>
+<li><strong>网络进程</strong> 负责页面的网络资源加载</li>
+<li><strong>插件进程</strong> 负责插件的运行，因插件易崩溃，所以需要插件进程来隔离，以保证插件的崩溃不会导致页面的崩溃。Chrome会为每个Tab标签创建一个插件进程</li>
+</ul>
+<blockquote>
+<p>一个网页至少应该有四个进程——浏览器进程、渲染进程、GPU进程、网络进程。如果网页还运行了插件则还有插件进程</p>
+</blockquote>
+<p>那么多进程浏览器又是如何解决单进程浏览器的问题的呢？</p>
+<ul>
+<li>浏览器不稳定问题。由于多进程浏览器中的各线程都有自己的进程，而不再像单线程浏览器那样属于一个浏览器进程。因此即使线程执行出错也仅导致线程所在的那个进程崩溃，而不会使整个浏览器进程崩溃</li>
+<li>浏览器卡顿问题。由于每个页面都有一个渲染进程，因此即使JS代码出现了死循环，也仅仅影响的是某一个页面</li>
+<li>不安全问题。由上图可知，渲染进程、插件进程都是在沙箱中运行</li>
+</ul>
+<p>虽然多进程架构很好！但也伴随有如下问题：</p>
+<ul>
+<li>更高的资源占用。譬如每个页面都会有一个渲染进程</li>
+<li>更复杂的体系架构</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/09/%E7%BD%91%E7%BB%9C/" rel="prev" title="网络">
+      <i class="fa fa-chevron-left"></i> 网络
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%B5%81%E7%A8%8B/" rel="next" title="5、浏览器页面渲染流程">
+      5、浏览器页面渲染流程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">进程和线程的关系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E8%BF%9B%E7%A8%8B%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">单进程浏览器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">多进程浏览器</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="small_ma"
+      src="/img/header.png">
+  <p class="site-author-name" itemprop="name">small_ma</p>
+  <div class="site-description" itemprop="description">慢慢来，比较快！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xianghui-ma" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xianghui-ma" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3291891717@qq.com" title="E-Mail → mailto:3291891717@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user-circle"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">small_ma</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">311k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:42</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
